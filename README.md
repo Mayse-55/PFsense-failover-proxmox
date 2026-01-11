@@ -173,15 +173,30 @@ Firewall --> Virtual IPs --> add
 - Address(es) : 172.16.0.10    /24
 - Virtual IP Password votremotdepasse
 - VHID Group : 1
-- Advertising frequency : 1 `base` & 0 Skew
+- Advertising frequency : 1 `base` & 0 `Skew`
 
 <img width="603" height="368" alt="image" src="https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02" />
 
+**Il faut réaliser cette étape pour les interfaces WAN :**
+
+```bash
+Firewall --> Virtual IPs --> add
+```
+
+2. Configuration
+- Type : CARP
+- Interface : LAN
+- Address(es) : 192.168.1.110   /24
+- Virtual IP Password votremotdepasse
+- VHID Group : 1
+- Advertising frequency : 1 `base` & 0 `Skew`
+
+<img width="603" height="329" alt="image" src="https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79" />
+
 #### Sur pfSense 2 (Backup) :
 
-1. Répéter les étapes ci-dessus
-2. **System** → **High Avail. Sync**
-   - Mode : Synchroniser depuis le partenaire
+1. Répéter les étapes ci-dessus changer juste 0 `Skew` à 1 `Skew`
+
 
 ### 4.3 Configuration de pfsync
 
