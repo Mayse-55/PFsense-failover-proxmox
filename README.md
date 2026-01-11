@@ -22,7 +22,6 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 ### Matériel et Logiciels
 - **Proxmox VE** : Version 9.1.4 (testé et validé)
 - **pfSense** : Version 2.8.1-RELEASE
-- **Open vSwitch** : Version 2.19+
 - **Accès** : Droits administrateur (sudo/root)
 - **Cluster** : Minimum 2 nœuds Proxmox
 
