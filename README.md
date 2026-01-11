@@ -92,12 +92,12 @@ Pour chaque VM pfSense :
 
 #### Configuration des interfaces réseau :
 ```
-pfSense1 - WAN : 192.168.1.101
-pfSense2 - WAN : 192.168.1.102
+pfSense1 - WAN : 192.168.1.101 (à adapter selon votre configuration)
+pfSense2 - WAN : 192.168.1.102 (à adapter selon votre configuration)
 IP virtuelle WAN : 192.168.1.110 (à configurer dans pfSense)
 
-pfSense1 - LAN : 172.16.0.1
-pfSense2 - LAN : 172.16.0.2
+pfSense1 - LAN : 172.16.0.1 (à adapter selon votre configuration)
+pfSense2 - LAN : 172.16.0.2 (à adapter selon votre configuration)
 IP virtuelle LAN : 172.16.0.10 (à configurer dans pfSense)
 ```
 
@@ -155,7 +155,7 @@ ovs-vsctl get interface vxlan-lan statistics
 1. Démarrer la VM avec l'ISO pfSense
 2. Suivre l'assistant d'installation
 3. Sélectionner **Auto (UFS)** pour le partitionnement
-4. Redémarrer après installation
+4. Configurer les interfaces réseaux
 
 ### 4.2 Configuration CARP
 
