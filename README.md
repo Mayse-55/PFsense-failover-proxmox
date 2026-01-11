@@ -237,7 +237,3 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ![Règle HTTPS](https://github.com/user-attachments/assets/48fd975c-393c-4ff3-bc8e-998d3025a083)
 ![Règle PFSYNC](https://github.com/user-attachments/assets/1525e61e-816a-455a-a3c1-a3d6b788ed3c)
-
----
-
-Si vous souhaitez ajouter des sections supplémentaires (comme le dépannage, des scripts utiles ou des ressources), je peux vous aider à les rédiger dans le même style. Dites-moi !
