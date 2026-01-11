@@ -250,16 +250,14 @@ Répéter sur le Backup avec les adresses correspondantes.
 
 ![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
 
-#### Sur pfSense (Backup)
+#### Sur pfSense Backup
 Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
-
-> Le mot de passe CARP et le VHID doivent être identiques sur les deux nœuds.
 
 #### Vérification
 
-Naviguer vers **Status** → **CARP (failover)** :
-- Master : Statut **MASTER**
-- Backup : Statut **BACKUP**
+**Vérification du statut CARP**
+   - Naviguer vers **Status** → **CARP (failover)**
+   - Les deux adresses doivent apparaître avec le statut "Master" sur pfSense 1.
 
 ---
 
