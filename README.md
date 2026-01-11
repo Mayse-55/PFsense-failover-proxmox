@@ -57,7 +57,6 @@ Sur chaque serveur Proxmox, créer une VM avec les paramètres suivants :
 | Disque              | 32 Go (SCSI, cache: writeback) |
 | Réseau              | virtio (bridge: vmbr0)         |
 
-> [!warning]  
 > Une VM pfSense doit être créée sur chaque nœud du cluster.
 
 ---
@@ -100,6 +99,7 @@ pfSense1 - LAN : 172.16.0.1
 pfSense2 - LAN : 172.16.0.2 
 IP virtuelle LAN : 172.16.0.10 (à configurer dans pfSense)
 ```
+> [!warning]
 > Les IPs sont à adapter selon votre configuration
 
 ---
