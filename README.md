@@ -42,18 +42,18 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 │                    Topologie Réseau                         │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  ┌────────────┐                    ┌────────────┐         │
-│  │  Proxmox 1 │◄──VXLAN Tunnel────►│  Proxmox 2 │         │
-│  │ 192.168.1.10│      (vmbr1)      │192.168.1.20│         │
-│  └─────┬──────┘                    └──────┬─────┘         │
-│        │                                   │               │
-│  ┌─────▼──────┐                    ┌──────▼─────┐         │
-│  │ pfSense 1  │                    │ pfSense 2  │         │
-│  │   MASTER   │                    │   BACKUP   │         │
-│  └─────┬──────┘                    └──────┬─────┘         │
-│        │                                   │               │
-│    WAN │ LAN                          WAN │ LAN           │
-└────────┼──────────────────────────────────┼───────────────┘
+│  ┌────────────┐                    ┌────────────┐           │
+│  │  Proxmox 1 │◄──VXLAN Tunnel────►│  Proxmox 2 │           │
+│  │ 192.168.1.10│      (vmbr1)      │192.168.1.20│           │
+│  └─────┬──────┘                    └──────┬─────┘           │
+│        │                                   │                │
+│  ┌─────▼──────┐                    ┌──────▼─────┐           │
+│  │ pfSense 1  │                    │ pfSense 2  │           │
+│  │   MASTER   │                    │   BACKUP   │           │
+│  └─────┬──────┘                    └──────┬─────┘           │
+│        │                                   │                │
+│    WAN │ LAN                          WAN │ LAN             │
+└────────┼──────────────────────────────────┼─────────────────┘
          ▼                                  ▼
     Internet                           Réseau Local
 ```
@@ -64,8 +64,8 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 
 #### 1.1 Téléchargement de l'ISO
 ```bash
-wget https://github.com/ipsec-dev/pfsense-iso/releases/download/2.8.1/pfSense-CE-memstick-2.8.1-RELEASE-amd64.iso
-```
+[wget https://github.com/ipsec-dev/pfsense-iso/releases/download/2.8.1/pfSense-CE-memstick-2.8.1-RELEASE-amd64.iso
+](https://github.com/ipsec-dev/pfsense-iso/releases)```
 
 #### 1.2 Création des VM pfSense
 Sur chaque serveur Proxmox :
