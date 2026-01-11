@@ -1,18 +1,10 @@
-Voici une version plus lisible et visuellement agréable de ton README, sans en changer le contenu ni la structure :
-
----
-
-<div align="center">
-
-# ⚡ Configuration d'un cluster pfSense en HA sous Proxmox
+# Configuration d'un cluster pfSense en HA sous Proxmox
 
 [![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)](https://www.proxmox.com/)
 [![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)](https://www.pfsense.org/)
 [![License](https://img.shields.io/badge/Documentation-CC--BY--4.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 
 **Guide complet pour configurer un cluster haute disponibilité pfSense avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.**
-
-</div>
 
 ---
 
@@ -41,7 +33,7 @@ Voici une version plus lisible et visuellement agréable de ton README, sans en 
 - 1 sous-réseau pour le LAN
 - Connexion réseau stable entre les nœuds
 
-> ⚠️ **Attention**
+> [!caution]
 > Cette documentation a été testée et validée sur des serveurs Proxmox **9.1.4** et deux pfSense **2.8.1-RELEASE**.
 > Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.
 > En cas de problème, vérifiez votre configuration système et réseau.
@@ -66,7 +58,6 @@ Sur chaque serveur Proxmox :
 | Disque              | 32GB (SCSI, cache: writeback)  |
 | Réseau              | virtio (bridge: vmbr0)         |
 
-> **⚠️ Important**
 > Créez une VM pfSense sur chaque nœud du cluster.
 
 ---
