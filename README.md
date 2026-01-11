@@ -55,7 +55,8 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 │     WAN │ LAN                           WAN │ LAN           │
 └─────────┼───────────────────────────────────┼───────────────┘
           ▼                                   ▼
-       Internet                          Réseau Local
+ Internet + Réseau Local             Internet + Réseau Local
+
 ```
 
 ## Installation
