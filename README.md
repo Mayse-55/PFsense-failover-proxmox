@@ -64,9 +64,8 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 ### 1. Installation de pfSense
 
 #### 1.1 Téléchargement de l'ISO
-```bash
-[wget https://github.com/ipsec-dev/pfsense-iso/releases/download/2.8.1/pfSense-CE-memstick-2.8.1-RELEASE-amd64.iso
-](https://github.com/ipsec-dev/pfsense-iso/releases)```
+
+https://github.com/ipsec-dev/pfsense-iso/releases
 
 #### 1.2 Création des VM pfSense
 Sur chaque serveur Proxmox :
