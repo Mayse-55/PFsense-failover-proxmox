@@ -106,12 +106,12 @@ Pour chaque VM pfSense :
 1. Éteindre la VM
 2. **Hardware** → **Add** → **Network Device**
 3. Configuration :
-   ```
-   Model: VirtIO (paravirtualized)
-   Bridge: vmbr1
-   VLAN Tag: (selon votre configuration)
-   Firewall: No (selon votre configuration)
-   ```
+```
+Model: VirtIO (paravirtualized)
+Bridge: vmbr1
+VLAN Tag: (selon votre configuration)
+Firewall: No (selon votre configuration)
+```
 4. Démarrer la VM
 
 ## Configuration Open vSwitch
