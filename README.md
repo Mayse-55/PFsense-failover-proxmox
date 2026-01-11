@@ -170,14 +170,14 @@ ovs-vsctl get interface vxlan-lan statistics
    Firewall --> Virtual IPs --> add
    ```
 2. **Configuration**
-   - Type : CARP
-   - Interface : LAN
-   - Address(es) : 172.16.0.10 /24
-   - Virtual IP Password : votremotdepasse
-   - VHID Group : 1
-   - Advertising frequency : 1 `base` & 0 `Skew`
+- Type : CARP
+- Interface : LAN
+- Address(es) : 172.16.0.10 /24
+- Virtual IP Password : votremotdepasse
+- VHID Group : 1
+- Advertising frequency : 1 `base` & 0 `Skew`
 
-   ![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
+![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
 
 **Répéter pour les interfaces WAN :**
 ```bash
