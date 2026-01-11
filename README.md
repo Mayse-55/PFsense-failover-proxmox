@@ -405,42 +405,6 @@ ovs-vsctl list interface vxlan-lan | grep statistics
 tcpdump -i enp8s0 -n port 4789
 ```
 
-### pfSense
-
-#### Configuration réseau
-
-```bash
-# Recharger les interfaces
-/etc/rc.reload_interfaces
-
-# État des interfaces
-ifconfig
-
-# Table de routage
-netstat -rn
-```
-
-#### Diagnostic CARP
-
-```bash
-# État CARP
-ifconfig | grep carp
-
-# Mode maintenance
-/etc/rc.carp_maintenance_mode start
-/etc/rc.carp_maintenance_mode stop
-```
-
-#### Diagnostic pfsync
-
-```bash
-# Capture pfsync
-tcpdump -i vtnet1 proto pfsync
-
-# Statistiques
-pfctl -vvsync
-```
-
 ---
 
 ## Validation finale
