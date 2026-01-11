@@ -92,14 +92,15 @@ Pour chaque VM pfSense :
 
 #### Configuration des interfaces réseau :
 ```
-pfSense1 - WAN : 192.168.1.101 (à adapter selon votre configuration)
-pfSense2 - WAN : 192.168.1.102 (à adapter selon votre configuration)
+pfSense1 - WAN : 192.168.1.101 
+pfSense2 - WAN : 192.168.1.102 
 IP virtuelle WAN : 192.168.1.110 (à configurer dans pfSense)
 
-pfSense1 - LAN : 172.16.0.1 (à adapter selon votre configuration)
-pfSense2 - LAN : 172.16.0.2 (à adapter selon votre configuration)
+pfSense1 - LAN : 172.16.0.1 
+pfSense2 - LAN : 172.16.0.2 
 IP virtuelle LAN : 172.16.0.10 (à configurer dans pfSense)
 ```
+> Les IPs sont à adapter selon votre configuration
 
 ---
 
