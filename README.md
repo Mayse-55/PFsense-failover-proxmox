@@ -89,9 +89,6 @@ apt update && apt dist-upgrade -y
 
 # Installation d'Open vSwitch
 apt install openvswitch-switch openvswitch-common -y
-
-# Vérification de l'installation
-ovs-vsctl --version
 ```
 
 #### 2.2 Configuration des bridges OVS
