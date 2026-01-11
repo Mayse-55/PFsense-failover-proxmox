@@ -34,28 +34,6 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 > Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.  
 > En cas de problème, vérifiez votre configuration système et réseau.
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Topologie Réseau                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│   ┌────────────┐                     ┌────────────┐         │
-│   │  Proxmox 1 │  ◄──VXLAN Tunnel──► │  Proxmox 2 │         │
-│   │192.168.1.10│      (vmbr1)        │192.168.1.20│         │
-│   └─────┬──────┘                     └──────┬─────┘         │
-│         │                                   │               │
-│   ┌─────▼──────┐                     ┌──────▼─────┐         │
-│   │ pfSense 1  │                     │ pfSense 2  │         │
-│   │   MASTER   │                     │   BACKUP   │         │
-│   └─────┬──────┘                     └──────┬─────┘         │
-│         │                                   │               │
-│     WAN │ LAN                           WAN │ LAN           │
-└─────────┼───────────────────────────────────┼───────────────┘
-          ▼                                   ▼
- Internet + Réseau Local             Internet + Réseau Local
-
 ```
 
 ## Installation
@@ -113,23 +91,34 @@ Firewall: No (selon votre configuration)
 ```
 4. Démarrer la VM
 
+#### Configuration des interfaces :
+```
+pfSense1 - WAN : 192.168.1.101
+pfSense2 - WAN : 192.168.1.102
+@IP virtuelle WAN : 192.168.1.110
+
+pfSense1 - LAN : 172.16.0.1
+pfSense2 - LAN : 172.16.0.2
+@IP virtuelle LAN : 172.16.0.10
+```
+
 ## Configuration Open vSwitch
 
 ### 3.1 Création du tunnel VXLAN
 
-**Sur Proxmox 1 (192.168.1.10) :**
+**Sur Proxmox 1 (192.168.1.101) :**
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.1.20 \
+     options:remote_ip=192.168.1.102 \
      options:key=2000
 ```
 
-**Sur Proxmox 2 (192.168.1.20) :**
+**Sur Proxmox 2 (192.168.1.102) :**
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.1.10 \
+     options:remote_ip=192.168.1.101 \
      options:key=2000
 ```
 
@@ -166,32 +155,24 @@ ovs-vsctl get interface vxlan-lan statistics
 3. Sélectionner **Auto (UFS)** pour le partitionnement
 4. Redémarrer après installation
 
-#### Configuration des interfaces :
-```
-WAN (wan)  -> vtnet0  -> Adresse publique
-LAN (lan)  -> vtnet1  -> 192.168.1.1/24
-SYNC (sync)-> vtnet2  -> 192.168.100.5/30
-```
-
-### 4.2 Configuration CARP (Haute Disponibilité)
+### 4.2 Configuration CARP 
 
 #### Sur pfSense 1 (Master) :
 
-1. **System** → **High Avail. Sync**
-   - Synchronisation : Activée
-   - Interface de synchronisation : SYNC
-   - IP du partenaire : 192.168.100.6
+1. Configuration Virtual IPs
+```bash
+Firewall --> Virtual IPs --> add
+```
 
-2. **Services** → **CARP Settings**
-   - Activer CARP
-   - Virtual IPs :
-     ```
-     WAN VIP: 192.168.0.100/24
-     LAN VIP: 192.168.1.254/24
-     ```
+2. Configuration
+- Type : CARP
+- Interface : LAN
+- Address(es) : 172.16.0.10    /24
+- Virtual IP Password votremotdepasse
+- VHID Group : 1
+- Advertising frequency : 1 `base` & 0 Skew
 
-3. **Firewall** → **Virtual IPs**
-   - Ajouter les VIPs avec le même password CARP
+<img width="603" height="368" alt="image" src="https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02" />
 
 #### Sur pfSense 2 (Backup) :
 
