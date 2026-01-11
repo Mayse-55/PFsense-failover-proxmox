@@ -127,16 +127,6 @@ systemctl status openvswitch-switch
    - **Autostart** : Coché
 4. Appliquer la configuration
 
-#### Via la ligne de commande
-
-```bash
-# Créer le bridge
-ovs-vsctl add-br vmbr1
-
-# Vérifier
-ovs-vsctl list-br
-```
-
 ### 4. Ajout d'une interface réseau aux VMs
 
 Pour chaque VM pfSense :
