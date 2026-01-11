@@ -57,7 +57,7 @@ Sur chaque serveur Proxmox, créer une VM avec les paramètres suivants :
 | Disque              | 32 Go (SCSI, cache: writeback) |
 | Réseau              | virtio (bridge: vmbr0)         |
 
-> **Remarque**  
+> **Remarque** :  
 > Une VM pfSense doit être créée sur chaque nœud du cluster.
 
 ---
