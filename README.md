@@ -122,8 +122,7 @@ Firewall: No (selon votre configuration)
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
      options:remote_ip=192.168.1.20 \
-     options:key=2000 \
-     options:dst_port=4789
+     options:key=2000
 ```
 
 **Sur Proxmox 2 (192.168.1.20) :**
@@ -131,8 +130,7 @@ ovs-vsctl add-port vmbr1 vxlan-lan \
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
      options:remote_ip=192.168.1.10 \
-     options:key=2000 \
-     options:dst_port=4789
+     options:key=2000
 ```
 
 ### 3.2 Vérification de la configuration
