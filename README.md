@@ -325,6 +325,7 @@ ovs-vsctl del-br vmbr1
 ```
 
 ### Vérifier si un tunnel fonctionne
+
 1. **Vérifier l'état de l'interface**
 ```bash
 ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
@@ -348,7 +349,7 @@ statistics          : {collisions=0, rx_bytes=125840, rx_crc_err=0, rx_dropped=0
 ✅ `rx_packets` et `tx_packets` > 0 = Le trafic passe  
 ❌ Si tous à 0 = Aucun trafic
 
-4. **Voir toutes les infos du tunnel**
+3. **Voir toutes les infos du tunnel**
 ```bash
 ovs-vsctl list interface vxlan-lan
 ```
@@ -364,16 +365,6 @@ type                : vxlan
 ```
 ✅ `tunnel_egress_iface_carrier=up` = Interface physique active  
 ✅ `options` = Vérifiez que `remote_ip` et `key` sont corrects
-
-5. **Tester avec tcpdump**
-```bash
-# Voir le trafic VXLAN (port UDP 4789)
-tcpdump -i enp8s0 -n port 4789
-
-# Capturer le trafic sur le bridge virtuel
-tcpdump -i vmbr1 -n
-```
-**Test :** Effectuez un ping depuis un pfSense et observez le trafic dans tcpdump.
 
 ---
 
