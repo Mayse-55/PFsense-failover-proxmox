@@ -135,7 +135,6 @@ Pour chaque VM pfSense :
 2. Ajouter une interface réseau :
    - **Bridge** : vmbr1
    - **Model** : VirtIO
-   - **Firewall** : Désactivé
 3. Démarrer la VM
 
 ---
