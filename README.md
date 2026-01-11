@@ -31,8 +31,8 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 - Connexion réseau stable entre les nœuds
 
 > [!CAUTION]
-> Cette documentation a été testée et validée sur des serveurs Proxmox **9.1.4** et deux pfSense **2.8.1-RELEASE**.
-> Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.
+> Cette documentation a été testée et validée sur des serveurs Proxmox **9.1.4** et deux pfSense **2.8.1-RELEASE**.  
+> Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.  
 > En cas de problème, vérifiez votre configuration système et réseau.
 
 ## Architecture
