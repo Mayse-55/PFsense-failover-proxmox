@@ -197,24 +197,6 @@ error               : []
 link_state          : up
 ```
 
-### Persistance de la configuration
-
-Éditer `/etc/network/interfaces` sur chaque nœud :
-
-```bash
-nano /etc/network/interfaces
-```
-
-Ajouter :
-
-```bash
-auto vmbr1
-iface vmbr1 inet manual
-    ovs_type OVSBridge
-    ovs_ports vxlan-lan
-    post-up ovs-vsctl --may-exist add-port vmbr1 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.1.102 options:key=2000
-```
-
 ---
 
 ## Configuration pfSense
