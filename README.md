@@ -237,7 +237,7 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ---
 
-## 📋 Aide : Commandes de base Open vSwitch
+## Aide : Commandes de base Open vSwitch
 
 ### Voir la configuration complète OVS
 ```bash
@@ -320,7 +320,7 @@ ovs-vsctl list-ports vmbr1
 ovs-vsctl del-port vmbr1 vxlan-lan
 ovs-vsctl del-port vmbr1 vxlan-sync
 
-# ⚠️ Supprimer un bridge complet (supprime le bridge ET tous ses tunnels)
+# Supprimer un bridge complet (supprime le bridge ET tous ses tunnels)
 ovs-vsctl del-br vmbr1
 ```
 
