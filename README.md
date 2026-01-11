@@ -36,7 +36,7 @@ Guide technique pour la mise en place d'un cluster pfSense en haute disponibilit
 - Connectivité réseau entre les nœuds Proxmox
 
 > [!caution]  
-> Ce guide a été testé avec Proxmox VE 9.1.4 et pfSense 2.8.1-RELEASE.  
+> Ce guide a été testé avec **Proxmox VE 9.1.4** et **pfSense 2.8.1-RELEASE**.  
 > Adaptez les adresses IP selon votre environnement.  
 
 ---
