@@ -98,11 +98,11 @@ Firewall: No (selon votre configuration)
 ```
 pfSense1 - WAN : 192.168.1.101
 pfSense2 - WAN : 192.168.1.102
-@IP virtuelle WAN : 192.168.1.110
+@IP virtuelle WAN : 192.168.1.110 (Configuration dans pfsense)
 
 pfSense1 - LAN : 172.16.0.1
 pfSense2 - LAN : 172.16.0.2
-@IP virtuelle LAN : 172.16.0.10
+@IP virtuelle LAN : 172.16.0.10 (Configuration dans pfsense)
 ```
 
 ## Configuration Open vSwitch
