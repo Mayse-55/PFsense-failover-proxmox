@@ -3,112 +3,177 @@
 [![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)](https://www.proxmox.com/)
 [![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)](https://www.pfsense.org/)
 
-**Guide technique pour la configuration d'un cluster pfSense en haute disponibilité avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.**
+Guide technique pour la mise en place d'un cluster pfSense en haute disponibilité avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.
 
 ---
 
 ## Table des matières
+
 1. [Prérequis](#prérequis)
 2. [Architecture](#architecture)
 3. [Installation](#installation)
 4. [Configuration Open vSwitch](#configuration-open-vswitch)
 5. [Configuration pfSense](#configuration-pfsense)
-6. [Dépannage](#dépannage)
-7. [Scripts utiles](#scripts-utiles)
-8. [Ressources](#ressources)
+6. [Validation](#validation)
+7. [Dépannage](#dépannage)
+8. [Référence des commandes](#référence-des-commandes)
 
 ---
 
 ## Prérequis
 
-### Matériel et Logiciels
-- **Proxmox VE** : Version 9.1.4 (testée et validée)
+### Environnement
+
+- **Proxmox VE** : Version 9.1.4 ou supérieure
 - **pfSense** : Version 2.8.1-RELEASE
-- **Accès** : Droits administrateur (sudo/root)
-- **Cluster** : Minimum 2 nœuds Proxmox
+- **Accès** : Droits administrateur root
+- **Infrastructure** : Minimum 2 nœuds Proxmox
 
-### Configuration Réseau
-- 2 adresses IP publiques pour les interfaces WAN
-- 1 sous-réseau dédié pour le LAN
-- Connexion réseau stable et redondante entre les nœuds
+### Réseau
 
-> [!caution]
-> Ce guide a été testé et validé sur des serveurs Proxmox **9.1.4** et pfSense **2.8.1-RELEASE**.
-> La configuration utilise une carte réseau physique et une interface virtuelle OVS.
-> En cas de dysfonctionnement, vérifiez la conformité de votre configuration système et réseau.
+- Deux adresses IP pour les interfaces WAN
+- Un sous-réseau dédié pour le LAN
+- Connectivité réseau entre les nœuds Proxmox
+
+> **Note** : Ce guide a été testé avec Proxmox VE 9.1.4 et pfSense 2.8.1-RELEASE. Adaptez les adresses IP selon votre environnement.
+
+---
+
+## Architecture
+
+### Principe de fonctionnement
+
+Le cluster repose sur plusieurs technologies :
+
+- **CARP** : Protocole de redondance pour les adresses IP virtuelles
+- **pfsync** : Synchronisation des tables d'états en temps réel
+- **XMLRPC** : Réplication de la configuration
+- **Open vSwitch** : Infrastructure de commutation virtuelle
+- **VXLAN** : Tunnel réseau de niveau 2 entre les nœuds
+
+### Schéma réseau
+
+```
+Internet
+   │
+   └─── WAN ───┬─── pfSense Master (192.168.1.101)
+               ├─── pfSense Backup (192.168.1.102)
+               └─── IP Virtuelle (192.168.1.110) ← CARP
+   
+   └─── LAN ───┬─── pfSense Master (172.16.0.1)
+               ├─── pfSense Backup (172.16.0.2)
+               └─── IP Virtuelle (172.16.0.10) ← CARP
+```
 
 ---
 
 ## Installation
 
-### 1. Installation de pfSense
+### 1. Création des machines virtuelles pfSense
 
-#### 1.1 Téléchargement de l'ISO
-[Lien de téléchargement de l'ISO pfSense](https://github.com/ipsec-dev/pfsense-iso/releases)
+#### Téléchargement de l'ISO
 
-#### 1.2 Création des machines virtuelles pfSense
-Sur chaque serveur Proxmox, créer une VM avec les paramètres suivants :
+[Télécharger pfSense](https://github.com/pfsense/pfsense/releases)
 
-| **Paramètre**       | **Valeur**                     |
-|---------------------|--------------------------------|
-| Type                | Linux 6.x - 2.6 Kernel         |
-| Mémoire             | 4096 Mo                        |
-| Processeurs         | 2 (Type: host)                 |
-| Disque              | 32 Go (SCSI, cache: writeback) |
-| Réseau              | virtio (bridge: vmbr0)         |
+#### Paramètres des VMs
 
-> Une VM pfSense doit être créée sur chaque nœud du cluster.
+Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
+
+| Paramètre | Valeur |
+|-----------|--------|
+| **OS Type** | Linux 6.x - 2.6 Kernel |
+| **RAM** | 4096 MB |
+| **CPU** | 2 cores (type: host) |
+| **Disque** | 32 GB (SCSI, cache: writeback) |
+| **Réseau** | VirtIO (bridge: vmbr0) |
+
+> Une VM doit être créée sur chaque nœud du cluster.
+
+#### Installation du système
+
+1. Démarrer la VM avec l'ISO pfSense
+2. Suivre l'assistant d'installation
+3. Sélectionner le partitionnement **Auto (UFS)**
+4. Configurer les interfaces réseau (WAN et LAN)
+5. Redémarrer la VM
 
 ---
 
-### 2. Installation des paquets nécessaires
+### 2. Installation d'Open vSwitch
 
-#### 2.1 Installation d'Open vSwitch
+Sur chaque nœud Proxmox, exécuter :
+
 ```bash
 # Mise à jour du système
 apt update && apt dist-upgrade -y
 
 # Installation d'Open vSwitch
 apt install openvswitch-switch -y
+
+# Vérification
+systemctl status openvswitch-switch
 ```
 
-#### 2.2 Configuration des bridges OVS
-Sur chaque nœud Proxmox :
-1. Accéder à l'interface web Proxmox
-2. Naviguer vers **System** → **Network**
-3. Créer un nouveau bridge OVS :
-   - **Nom** : `vmbr1`
+### 3. Création du bridge OVS
 
-#### 2.3 Ajout des interfaces réseau aux VM
+#### Via l'interface web Proxmox
+
+1. Accéder à **System** → **Network**
+2. Cliquer sur **Create** → **OVS Bridge**
+3. Configurer :
+   - **Name** : `vmbr1`
+   - **Autostart** : Coché
+4. Appliquer la configuration
+
+#### Via la ligne de commande
+
+```bash
+# Créer le bridge
+ovs-vsctl add-br vmbr1
+
+# Vérifier
+ovs-vsctl list-br
+```
+
+### 4. Ajout d'une interface réseau aux VMs
+
 Pour chaque VM pfSense :
+
 1. Éteindre la VM
-2. Ajouter un périphérique réseau :
-   - **Modèle** : VirtIO (paravirtualized)
+2. Ajouter une interface réseau :
    - **Bridge** : vmbr1
-   - **VLAN Tag** : (selon votre configuration)
-   - **Firewall** : Désactivé (selon votre configuration)
+   - **Model** : VirtIO
+   - **Firewall** : Désactivé
 3. Démarrer la VM
-
-#### Configuration des interfaces réseau :
-```
-pfSense1 - WAN : 192.168.1.101 
-pfSense2 - WAN : 192.168.1.102 
-IP virtuelle WAN : 192.168.1.110 (à configurer dans pfSense)
-
-pfSense1 - LAN : 172.16.0.1 
-pfSense2 - LAN : 172.16.0.2 
-IP virtuelle LAN : 172.16.0.10 (à configurer dans pfSense)
-```
-> [!warning]
-> Les IPs sont à adapter selon votre configuration
 
 ---
 
 ## Configuration Open vSwitch
 
-### 3.1 Création du tunnel VXLAN
+### Plan d'adressage
 
-**Sur Proxmox 1 (192.168.1.101) :**
+Définir un plan d'adressage cohérent :
+
+**Interface WAN** :
+```
+pfSense Master  : 192.168.1.101
+pfSense Backup  : 192.168.1.102
+IP Virtuelle    : 192.168.1.110 (CARP)
+```
+
+**Interface LAN** :
+```
+pfSense Master  : 172.16.0.1
+pfSense Backup  : 172.16.0.2
+IP Virtuelle    : 172.16.0.10 (CARP)
+```
+
+> Les adresses IP sont à adapter selon votre configuration.
+
+### Création du tunnel VXLAN
+
+#### Sur Proxmox 1 (192.168.1.101)
+
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
@@ -116,7 +181,8 @@ ovs-vsctl add-port vmbr1 vxlan-lan \
      options:key=2000
 ```
 
-**Sur Proxmox 2 (192.168.1.102) :**
+#### Sur Proxmox 2 (192.168.1.102)
+
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
@@ -124,254 +190,364 @@ ovs-vsctl add-port vmbr1 vxlan-lan \
      options:key=2000
 ```
 
-### 3.2 Vérification de la configuration
+### Vérification du tunnel
 
-#### Afficher la configuration OVS :
 ```bash
+# Voir la configuration
 ovs-vsctl show
-```
 
-#### Vérifier l'état des interfaces :
-```bash
+# Vérifier l'état
 ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
 ```
-**Résultat attendu :**
-```bash
+
+**Résultat attendu** :
+```
 error               : []
 link_state          : up
 ```
 
-#### Vérifier les statistiques VXLAN :
+### Persistance de la configuration
+
+Éditer `/etc/network/interfaces` sur chaque nœud :
+
 ```bash
-ovs-vsctl get interface vxlan-lan statistics
+nano /etc/network/interfaces
+```
+
+Ajouter :
+
+```bash
+auto vmbr1
+iface vmbr1 inet manual
+    ovs_type OVSBridge
+    ovs_ports vxlan-lan
+    post-up ovs-vsctl --may-exist add-port vmbr1 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.1.102 options:key=2000
 ```
 
 ---
 
 ## Configuration pfSense
 
-### 4.1 Configuration initiale
+### 1. Configuration des interfaces
 
-#### Installation via console :
-1. Démarrer la VM avec l'ISO pfSense
-2. Suivre l'assistant d'installation
-3. Sélectionner **Auto (UFS)** pour le partitionnement
-4. Configurer les interfaces réseaux
+Se connecter à l'interface web de pfSense (identifiants par défaut : admin / pfsense).
 
-### 4.2 Configuration CARP
+#### Interface WAN (Master)
 
-#### Sur pfSense 1 (Master) :
+- **Type** : Static IPv4
+- **Adresse** : 192.168.1.101/24
+- **Passerelle** : Votre gateway WAN
 
-1. **Configuration des IP virtuelles**
-   - Naviguer vers **Firewall** → **Virtual IPs** → **Add**
-   - **Type** : CARP
-   - **Interface** : LAN
-   - **Adresse(s)** : 172.16.0.10 /24
-   - **Mot de passe VIP** : [votre_mot_de_passe]
-   - **VHID Group** : 1
-   - **Advertising frequency** : 1 (base) & 0 (Skew)
+#### Interface LAN (Master)
 
-   ![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
+- **Type** : Static IPv4
+- **Adresse** : 172.16.0.1/24
 
-2. **Répéter pour l'interface WAN** :
-   - **Type** : CARP
-   - **Interface** : WAN
-   - **Adresse(s)** : 192.168.1.110 /24
-   - **Mot de passe VIP** : [votre_mot_de_passe]
-   - **VHID Group** : 1
-   - **Advertising frequency** : 1 (base) & 0 (Skew)
-
-   ![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
-
-#### Sur pfSense 2 (Backup) :
-Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
-
-3. **Vérification du statut CARP**
-   - Naviguer vers **Status** → **CARP (failover)**
-   - Les deux adresses doivent apparaître avec le statut "Master" sur pfSense 1.
+Répéter sur le Backup avec les adresses correspondantes.
 
 ---
 
-### 4.3 Configuration du NAT
+### 2. Configuration CARP
 
-1. Naviguer vers **Firewall** → **NAT**
-2. Dans l'onglet **Outbound**, cocher **"Hybrid Outbound NAT rule generation"**
-3. Indiquer le réseau source et l'adresse de translation.
+#### Sur pfSense Master
+
+**IP Virtuelle LAN** :
+
+1. Naviguer vers **Firewall** → **Virtual IPs** → **Add**
+2. Configuration :
+   - **Type** : CARP
+   - **Interface** : LAN
+   - **Address** : 172.16.0.10 / 24
+   - **Virtual IP Password** : Mot de passe sécurisé
+   - **VHID Group** : 1
+   - **Advertising Frequency** : Base 1, Skew 0
+
+![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
+
+**IP Virtuelle WAN** :
+
+3. Cliquer sur **Add**
+4. Configuration :
+   - **Type** : CARP
+   - **Interface** : WAN
+   - **Address** : 192.168.1.110 / 24
+   - **Virtual IP Password** : Même mot de passe
+   - **VHID Group** : 2
+   - **Advertising Frequency** : Base 1, Skew 0
+
+![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
+
+#### Sur pfSense Backup
+
+Répéter la configuration en modifiant uniquement :
+- **Skew** : 100 (priorité secondaire)
+
+> Le mot de passe CARP et le VHID doivent être identiques sur les deux nœuds.
+
+#### Vérification
+
+Naviguer vers **Status** → **CARP (failover)** :
+- Master : Statut **MASTER**
+- Backup : Statut **BACKUP**
+
+---
+
+### 3. Configuration NAT
+
+Sur le pfSense Master uniquement :
+
+1. Naviguer vers **Firewall** → **NAT** → **Outbound**
+2. Sélectionner **Hybrid Outbound NAT rule generation**
+3. Sauvegarder
 
 ![NAT Outbound](https://github.com/user-attachments/assets/f8d9fc5b-f0e5-4845-b257-857c1248a51c)
 
-> **Note :**  
-> Cette configuration n'est à effectuer que sur le pfSense primaire.  
-> La réplication automatique se chargera de dupliquer les règles sur le nœud secondaire.
+> La configuration sera automatiquement répliquée vers le Backup.
 
 ---
 
-### 4.4 Configuration de la synchronisation haute disponibilité
+### 4. Synchronisation haute disponibilité
+
+Sur le pfSense Master :
 
 1. Naviguer vers **System** → **High Avail. Sync**
-2. Cocher **"Synchronize states"**
-3. Indiquer :
-   - **Interface de synchronisation** : LAN
-   - **Adresse IP du pfSense 2** : [IP_LAN_pfSense2]
-   - **Identifiants de connexion** : [vos_identifiants]
-4. Cocher toutes les options de synchronisation disponibles.
+2. Configuration :
+   - **Synchronize States** : Activé
+   - **Synchronize Interface** : LAN
+   - **pfsync Synchronize Peer IP** : 172.16.0.2
+   - **Synchronize Config to IP** : 172.16.0.2
+   - **Remote System Username** : admin
+   - **Remote System Password** : Mot de passe du Backup
+3. Cocher toutes les options de synchronisation
+4. Sauvegarder
 
 ![High Avail. Sync](https://github.com/user-attachments/assets/455ffb75-6078-4e61-b4c0-7dbea329be98)
 
 ---
 
-### 4.5 Configuration des règles de pare-feu pour la réplication
+### 5. Règles de pare-feu
 
-1. Naviguer vers **Firewall** → **Rules**
-2. Ajouter une règle pour autoriser la synchronisation :
-   - **Source** : IP virtuelle LAN
-   - **Destination** : This Firewall (self)
-   - **Port** : 443 (HTTPS)
-3. Ajouter une règle pour PFSYNC :
-   - **Protocole** : PFSYNC
-   - **Source** : IP virtuelle LAN
-   - **Destination** : This Firewall (self)
+#### Règle HTTPS (synchronisation XMLRPC)
+
+1. Naviguer vers **Firewall** → **Rules** → **LAN** → **Add**
+2. Configuration :
+   - **Action** : Pass
+   - **Protocol** : TCP
+   - **Source** : 172.16.0.2
+   - **Destination** : This firewall (self)
+   - **Destination Port** : HTTPS (443)
 
 ![Règle HTTPS](https://github.com/user-attachments/assets/48fd975c-393c-4ff3-bc8e-998d3025a083)
+
+#### Règle pfsync
+
+3. Cliquer sur **Add**
+4. Configuration :
+   - **Action** : Pass
+   - **Protocol** : pfsync
+   - **Source** : 172.16.0.2
+   - **Destination** : This firewall (self)
+
 ![Règle PFSYNC](https://github.com/user-attachments/assets/1525e61e-816a-455a-a3c1-a3d6b788ed3c)
 
+5. Sauvegarder et appliquer les changements
+
 ---
 
-## Aide : Commandes de base Open vSwitch
+## Validation
 
-### Voir la configuration complète OVS
+### Test de synchronisation
+
+1. Créer une règle de pare-feu sur le Master
+2. Vérifier sa présence sur le Backup
+3. Supprimer la règle de test
+
+### Test de basculement
+
+1. Depuis une machine du LAN, lancer un ping continu :
+   ```bash
+   ping -t 8.8.8.8
+   ```
+
+2. Arrêter la VM pfSense Master
+
+3. Observer le basculement :
+   - Le Backup passe en statut MASTER
+   - Le ping continue sans interruption majeure
+
+4. Redémarrer le Master :
+   - Il reprend le statut MASTER
+   - Le Backup redevient BACKUP
+
+**Résultat attendu** : Basculement en moins de 5 secondes avec perte minimale de paquets.
+
+---
+
+## Dépannage
+
+### Le tunnel VXLAN ne fonctionne pas
+
+**Vérifications** :
+
 ```bash
-ovs-vsctl show
+# Connectivité entre nœuds
+ping [IP_nœud_distant]
+
+# Port VXLAN ouvert
+nc -u -zv [IP_nœud_distant] 4789
+
+# Configuration du tunnel
+ovs-vsctl list interface vxlan-lan | grep options
 ```
 
-### Lister tous les bridges
+**Solution** :
+
 ```bash
+# Autoriser le port VXLAN
+iptables -I INPUT -p udp --dport 4789 -j ACCEPT
+
+# Redémarrer OVS
+systemctl restart openvswitch-switch
+```
+
+### Les deux pfSense sont MASTER
+
+**Causes** :
+- Communication CARP bloquée
+- Mot de passe CARP différent
+- VHID différent
+
+**Solutions** :
+- Vérifier les règles de pare-feu
+- Vérifier l'identité du mot de passe CARP
+- Tester la communication : `ping 172.16.0.2`
+
+### La synchronisation échoue
+
+**Vérifications** :
+
+```bash
+# Test de connectivité HTTPS
+telnet 172.16.0.2 443
+```
+
+**Solutions** :
+- Vérifier les identifiants dans High Avail. Sync
+- Vérifier les règles de pare-feu (port 443)
+- Consulter les logs système
+
+---
+
+## Référence des commandes
+
+### Open vSwitch
+
+#### Gestion des bridges
+
+```bash
+# Lister les bridges
 ovs-vsctl list-br
-```
 
-### Lister les ports d'un bridge
-```bash
-ovs-vsctl list-ports vmbr1
-```
+# Créer un bridge
+ovs-vsctl add-br vmbr1
 
-### Voir les détails d'une interface
-```bash
-ovs-vsctl list interface vxlan-lan
-```
-
-### Créer un tunnel VXLAN
-#### Méthode 1 : Commande simple
-```bash
-# Créer un tunnel VXLAN sur vmbr1 vers un Proxmox distant
-ovs-vsctl add-port vmbr1 vxlan-lan \
-  -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.25.103 \
-     options:key=2000
-```
-- **vmbr1** : Le bridge sur lequel attacher le tunnel
-- **vxlan-lan** : Nom du tunnel (modifiable)
-- **remote_ip** : IP du Proxmox distant
-- **key** : Identifiant VXLAN (doit être identique des deux côtés)
-
-#### Méthode 2 : Avec options avancées
-```bash
-# Tunnel VXLAN avec plus d'options
-ovs-vsctl add-port vmbr1 vxlan-lan \
-  -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.25.103 \
-     options:key=2000 \
-     options:dst_port=4789 \
-     options:ttl=64
-```
-- **dst_port** : Port UDP VXLAN (défaut : 4789)
-- **ttl** : Time To Live des paquets
-
-### Exemples de tunnels multiples
-```bash
-# Tunnel LAN (vmbr1)
-ovs-vsctl add-port vmbr1 vxlan-lan \
-  -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.25.103 \
-     options:key=2000
-
-# Tunnel SYNC (vmbr2)
-ovs-vsctl add-port vmbr2 vxlan-sync \
-  -- set interface vxlan-sync type=vxlan \
-     options:remote_ip=192.168.25.103 \
-     options:key=3000
-
-# Tunnel vers un 3ème Proxmox
-ovs-vsctl add-port vmbr1 vxlan-to-pxm4 \
-  -- set interface vxlan-to-pxm4 type=vxlan \
-     options:remote_ip=192.168.25.104 \
-     options:key=2000
-```
-
-### Supprimer un tunnel VXLAN
-```bash
-# Supprimer un tunnel spécifique
-ovs-vsctl del-port vmbr1 vxlan-lan
-
-# Supprimer TOUS les ports d'un bridge (ATTENTION)
-# Liste d'abord les ports
-ovs-vsctl list-ports vmbr1
-
-# Supprime tous les ports un par un
-ovs-vsctl del-port vmbr1 vxlan-lan
-ovs-vsctl del-port vmbr1 vxlan-sync
-
-# Supprimer un bridge complet (supprime le bridge ET tous ses tunnels)
+# Supprimer un bridge
 ovs-vsctl del-br vmbr1
+
+# Lister les ports
+ovs-vsctl list-ports vmbr1
 ```
 
-### Vérifier si un tunnel fonctionne
+#### Gestion des tunnels VXLAN
 
-#### 1. **Vérifier l'état de l'interface**
 ```bash
-ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
-```
-**Résultat attendu :**
-```
-error               : []
-link_state          : up
-```
+# Créer un tunnel
+ovs-vsctl add-port vmbr1 vxlan-lan \
+  -- set interface vxlan-lan type=vxlan \
+     options:remote_ip=192.168.1.102 \
+     options:key=2000
 
-#### 2. **Voir les statistiques du tunnel**
-```bash
-ovs-vsctl list interface vxlan-lan | grep statistics
-```
-**Résultat :**
-```
-statistics          : {collisions=0, rx_bytes=125840, rx_crc_err=0, rx_dropped=0, rx_errors=0, rx_frame_err=0, rx_over_err=0, rx_packets=1520, tx_bytes=98560, tx_dropped=0, tx_errors=0, tx_packets=1240}
-```
+# Supprimer un tunnel
+ovs-vsctl del-port vmbr1 vxlan-lan
 
-#### 3. **Voir toutes les infos du tunnel**
-```bash
+# Modifier l'IP distante
+ovs-vsctl set interface vxlan-lan options:remote_ip=192.168.1.103
+
+# Voir les détails
 ovs-vsctl list interface vxlan-lan
 ```
-**Infos importantes à vérifier :**
+
+#### Diagnostic
+
+```bash
+# Configuration complète
+ovs-vsctl show
+
+# État de l'interface
+ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
+
+# Statistiques
+ovs-vsctl list interface vxlan-lan | grep statistics
+
+# Capture de trafic VXLAN
+tcpdump -i enp8s0 -n port 4789
 ```
-admin_state         : up
-error               : []
-ifindex             : 12
-link_state          : up
-options             : {key="2000", remote_ip="192.168.25.103"}
-status              : {tunnel_egress_iface="enp8s0", tunnel_egress_iface_carrier=up}
-type                : vxlan
+
+### pfSense
+
+#### Configuration réseau
+
+```bash
+# Recharger les interfaces
+/etc/rc.reload_interfaces
+
+# État des interfaces
+ifconfig
+
+# Table de routage
+netstat -rn
+```
+
+#### Diagnostic CARP
+
+```bash
+# État CARP
+ifconfig | grep carp
+
+# Mode maintenance
+/etc/rc.carp_maintenance_mode start
+/etc/rc.carp_maintenance_mode stop
+```
+
+#### Diagnostic pfsync
+
+```bash
+# Capture pfsync
+tcpdump -i vtnet1 proto pfsync
+
+# Statistiques
+pfctl -vvsync
 ```
 
 ---
 
-## ✅ Validation finale
+## Validation finale
 
-À ce stade, votre cluster pfSense en haute disponibilité sous Proxmox devrait être pleinement opérationnel :
-- Les deux nœuds pfSense sont synchronisés via CARP et PFSYNC.
-- Les tunnels VXLAN sont actifs et permettent la communication entre les nœuds Proxmox.
-- Les règles de pare-feu et de NAT sont répliquées automatiquement.
-- Le basculement (failover) est testé et fonctionnel.
+Votre cluster pfSense en haute disponibilité est opérationnel lorsque :
 
-**Pour valider le bon fonctionnement :**
-1. Vérifiez le statut CARP sur les deux nœuds pfSense.
-2. Testez le basculement manuel en éteignant le nœud maître.
-3. Vérifiez la connectivité réseau depuis le LAN et le WAN.
-4. Consultez les logs système et les statistiques OVS pour détecter d’éventuelles anomalies.
+- Les deux nœuds sont synchronisés via CARP et pfsync
+- Les tunnels VXLAN sont actifs
+- Les règles sont répliquées automatiquement
+- Le basculement fonctionne sans interruption de service
+
+**Tests de validation** :
+
+1. Vérifier le statut CARP sur les deux nœuds
+2. Tester le basculement en éteignant le Master
+3. Vérifier la connectivité réseau depuis le LAN
+4. Consulter les logs système
+
+---
+
+**Version** : 1.0  
+**Dernière mise à jour** : Janvier 2026
