@@ -2,7 +2,6 @@
 
 ![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)
 ![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)
-![Open vSwitch](https://img.shields.io/badge/Open_vSwitch-2.19-green)
 ![License](https://img.shields.io/badge/Documentation-CC--BY--4.0-lightgrey)
 
 Guide complet pour configurer un cluster haute disponibilité pfSense avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.
