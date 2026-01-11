@@ -1,12 +1,22 @@
-# Configuration d'un cluster pfSense en HA sous Proxmox
+Voici une version plus lisible et visuellement agréable de ton README, sans en changer le contenu ni la structure :
 
-![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)
-![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)
-![License](https://img.shields.io/badge/Documentation-CC--BY--4.0-lightgrey)
+---
 
-Guide complet pour configurer un cluster haute disponibilité pfSense avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.
+<div align="center">
 
-## Table des matières
+# ⚡ Configuration d'un cluster pfSense en HA sous Proxmox
+
+[![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)](https://www.proxmox.com/)
+[![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)](https://www.pfsense.org/)
+[![License](https://img.shields.io/badge/Documentation-CC--BY--4.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
+
+**Guide complet pour configurer un cluster haute disponibilité pfSense avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.**
+
+</div>
+
+---
+
+## 📋 Table des matières
 - [Prérequis](#prérequis)
 - [Architecture](#architecture)
 - [Installation](#installation)
@@ -16,85 +26,84 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 - [Scripts utiles](#scripts-utiles)
 - [Ressources](#ressources)
 
-## Prérequis
+---
 
-### Matériel et Logiciels
+## 🔧 Prérequis
+
+### **Matériel et Logiciels**
 - **Proxmox VE** : Version 9.1.4 (testé et validé)
 - **pfSense** : Version 2.8.1-RELEASE
 - **Accès** : Droits administrateur (sudo/root)
 - **Cluster** : Minimum 2 nœuds Proxmox
 
-### Configuration Réseau
+### **Configuration Réseau**
 - 2 adresses IP publiques pour les WAN
 - 1 sous-réseau pour le LAN
 - Connexion réseau stable entre les nœuds
 
-> [!CAUTION]
-> Cette documentation a été testée et validée sur des serveurs Proxmox **9.1.4** et deux pfSense **2.8.1-RELEASE**.  
-> Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.  
+> ⚠️ **Attention**
+> Cette documentation a été testée et validée sur des serveurs Proxmox **9.1.4** et deux pfSense **2.8.1-RELEASE**.
+> Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.
 > En cas de problème, vérifiez votre configuration système et réseau.
 
 ---
 
-## Installation
+## 🛠 Installation
 
-### 1. Installation de pfSense
+### **1. Installation de pfSense**
 
-#### 1.1 Téléchargement de l'ISO
+#### **1.1 Téléchargement de l'ISO**
+🔗 [Lien de téléchargement](https://github.com/ipsec-dev/pfsense-iso/releases)
 
-https://github.com/ipsec-dev/pfsense-iso/releases
-
-#### 1.2 Création des VM pfSense
+#### **1.2 Création des VM pfSense**
 Sur chaque serveur Proxmox :
 
-| Paramètre | Valeur |
-|-----------|---------|
-| Type | Linux 6.x - 2.6 Kernel |
-| Mémoire | 4096 MB |
-| Processeurs | 2 (Type: host) |
-| Disque | 32GB (SCSI, cache: writeback) |
-| Réseau | virtio (bridge: vmbr0) |
+| **Paramètre**       | **Valeur**                     |
+|---------------------|--------------------------------|
+| Type                | Linux 6.x - 2.6 Kernel         |
+| Mémoire             | 4096 MB                        |
+| Processeurs         | 2 (Type: host)                 |
+| Disque              | 32GB (SCSI, cache: writeback)  |
+| Réseau              | virtio (bridge: vmbr0)         |
 
-> **Important** : Créez une VM pfSense sur chaque nœud du cluster.
+> **⚠️ Important**
+> Créez une VM pfSense sur chaque nœud du cluster.
 
-### 2. Installation des paquets nécessaires
+---
 
-#### 2.1 Installation d'Open vSwitch
+### **2. Installation des paquets nécessaires**
 
+#### **2.1 Installation d'Open vSwitch**
 ```bash
 # Mise à jour du système
 apt update && apt dist-upgrade -y
-```
 
-```bash
 # Installation d'Open vSwitch
 apt install openvswitch-switch -y
 ```
 
-#### 2.2 Configuration des bridges OVS
+#### **2.2 Configuration des bridges OVS**
 Sur Proxmox 1 et Proxmox 2 :
-
 1. Accédez à l'interface web Proxmox
 2. Naviguez vers **System** → **Network**
 3. Cliquez sur **Create** → **OVS Bridge**
 4. Configurez :
    - **Name** : `vmbr1`
 
-#### 2.3 Ajout des interfaces réseau aux VM
+#### **2.3 Ajout des interfaces réseau aux VM**
 Pour chaque VM pfSense :
-
 1. Éteindre la VM
 2. **Hardware** → **Add** → **Network Device**
 3. Configuration :
-```bash
-Model: VirtIO (paravirtualized)
-Bridge: vmbr1
-VLAN Tag: (selon votre configuration)
-Firewall: No (selon votre configuration)
-```
+   ```bash
+   Model: VirtIO (paravirtualized)
+   Bridge: vmbr1
+   VLAN Tag: (selon votre configuration)
+   Firewall: No (selon votre configuration)
+   ```
 4. Démarrer la VM
 
-#### Configuration des interfaces :
+#### **Configuration des interfaces :**
 ```
 pfSense1 - WAN : 192.168.1.101
 pfSense2 - WAN : 192.168.1.102
@@ -105,9 +114,11 @@ pfSense2 - LAN : 172.16.0.2
 @IP virtuelle LAN : 172.16.0.10 (Configuration dans pfsense)
 ```
 
-## Configuration Open vSwitch
+---
 
-### 3.1 Création du tunnel VXLAN
+## 🌉 Configuration Open vSwitch
+
+### **3.1 Création du tunnel VXLAN**
 
 **Sur Proxmox 1 (192.168.1.101) :**
 ```bash
@@ -125,78 +136,77 @@ ovs-vsctl add-port vmbr1 vxlan-lan \
      options:key=2000
 ```
 
-### 3.2 Vérification de la configuration
+### **3.2 Vérification de la configuration**
 
-#### Afficher la configuration OVS :
+#### **Afficher la configuration OVS :**
 ```bash
 ovs-vsctl show
 ```
 
-#### Vérifier l'état des interfaces :
+#### **Vérifier l'état des interfaces :**
 ```bash
 ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
 ```
-
 **Résultat attendu :**
 ```bash
 error               : []
 link_state          : up
 ```
 
-#### Vérifier les statistiques VXLAN :
+#### **Vérifier les statistiques VXLAN :**
 ```bash
 ovs-vsctl get interface vxlan-lan statistics
 ```
 
-## Configuration pfSense
+---
 
-### 4.1 Configuration initiale
+## 🔒 Configuration pfSense
 
-#### Installation via console :
+### **4.1 Configuration initiale**
+
+#### **Installation via console :**
 1. Démarrer la VM avec l'ISO pfSense
 2. Suivre l'assistant d'installation
 3. Sélectionner **Auto (UFS)** pour le partitionnement
 4. Redémarrer après installation
 
-### 4.2 Configuration CARP 
+### **4.2 Configuration CARP**
 
-#### Sur pfSense 1 (Master) :
+#### **Sur pfSense 1 (Master) :**
 
-1. Configuration Virtual IPs
+1. **Configuration Virtual IPs**
+   ```bash
+   Firewall --> Virtual IPs --> add
+   ```
+2. **Configuration**
+   - Type : CARP
+   - Interface : LAN
+   - Address(es) : 172.16.0.10 /24
+   - Virtual IP Password : votremotdepasse
+   - VHID Group : 1
+   - Advertising frequency : 1 `base` & 0 `Skew`
+
+   ![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
+
+**Répéter pour les interfaces WAN :**
 ```bash
 Firewall --> Virtual IPs --> add
 ```
-
-2. Configuration
 - Type : CARP
-- Interface : LAN
-- Address(es) : 172.16.0.10    /24
-- Virtual IP Password votremotdepasse
+- Interface : WAN
+- Address(es) : 192.168.1.110 /24
+- Virtual IP Password : votremotdepasse
 - VHID Group : 1
 - Advertising frequency : 1 `base` & 0 `Skew`
 
-<img width="603" height="368" alt="image" src="https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02" />
+![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
 
-**Il faut réaliser cette étape pour les interfaces WAN :**
+#### **Sur pfSense 2 (Backup) :**
+Répéter les étapes ci-dessus en changeant **0 `Skew`** à **1 `Skew`**.
 
-```bash
-Firewall --> Virtual IPs --> add
-```
+---
 
-2. Configuration
-- Type : CARP
-- Interface : LAN
-- Address(es) : 192.168.1.110   /24
-- Virtual IP Password votremotdepasse
-- VHID Group : 1
-- Advertising frequency : 1 `base` & 0 `Skew`
-
-<img width="603" height="329" alt="image" src="https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79" />
-
-#### Sur pfSense 2 (Backup) :
-
-1. Répéter les étapes ci-dessus changer juste 0 `Skew` à 1 `Skew`
-
+Tu peux copier ce code directement dans ton README.md ! Si tu veux ajouter des icônes ou des couleurs supplémentaires, je peux t’aider à personnaliser encore plus. 😊
 
 ### 4.3 Configuration de pfsync
 
