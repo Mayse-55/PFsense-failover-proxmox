@@ -99,8 +99,6 @@ Sur Proxmox 1 et Proxmox 2 :
 3. Cliquez sur **Create** → **OVS Bridge**
 4. Configurez :
    - **Name** : `vmbr1`
-   - **IPv4/CIDR** : `192.168.100.1/30` (Proxmox 1)
-   - **IPv4/CIDR** : `192.168.100.2/30` (Proxmox 2)
 
 #### 2.3 Ajout des interfaces réseau aux VM
 Pour chaque VM pfSense :
@@ -112,7 +110,7 @@ Pour chaque VM pfSense :
    Model: VirtIO (paravirtualized)
    Bridge: vmbr1
    VLAN Tag: (selon votre configuration)
-   Firewall: No
+   Firewall: No (selon votre configuration)
    ```
 4. Démarrer la VM
 
