@@ -390,5 +390,3 @@ ovs-vsctl del-br vmbr1
 2. Testez le basculement manuel en éteignant le nœud maître.
 3. Vérifiez la connectivité réseau depuis le LAN et le WAN.
 4. Consultez les logs système et les statistiques OVS pour détecter d’éventuelles anomalies.
-
-En cas de problème, reportez-vous à la section [Dépannage](#dépannage) ou consultez les [Ressources](#ressources) pour obtenir de l’aide supplémentaire.
