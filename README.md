@@ -68,7 +68,7 @@ apt update && apt dist-upgrade -y
 
 ```bash
 # Installation d'Open vSwitch
-apt install openvswitch-switch openvswitch-common -y
+apt install openvswitch-switch -y
 ```
 
 #### 2.2 Configuration des bridges OVS
