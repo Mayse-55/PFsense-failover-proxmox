@@ -73,11 +73,11 @@ Internet
 
 ### 1. Création des machines virtuelles pfSense
 
-#### Téléchargement de l'ISO
+### Téléchargement de l'ISO
 
 [Télécharger pfSense](https://github.com/ipsec-dev/pfsense-iso/releases)
 
-#### Paramètres des VMs
+### Paramètres des VMs
 
 Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
 
@@ -118,7 +118,7 @@ systemctl status openvswitch-switch
 
 ### 3. Création du bridge OVS
 
-#### Via l'interface web Proxmox
+### Via l'interface web Proxmox
 
 1. Accéder à **System** → **Network**
 2. Cliquer sur **Create** → **OVS Bridge**
@@ -163,7 +163,7 @@ IP Virtuelle    : 172.16.0.10 (CARP)
 
 ### Création du tunnel VXLAN
 
-#### Sur Proxmox 1 (192.168.1.101)
+### Sur Proxmox 1 (192.168.1.101)
 
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
@@ -172,7 +172,7 @@ ovs-vsctl add-port vmbr1 vxlan-lan \
      options:key=2000
 ```
 
-#### Sur Proxmox 2 (192.168.1.102)
+### Sur Proxmox 2 (192.168.1.102)
 
 ```bash
 ovs-vsctl add-port vmbr1 vxlan-lan \
@@ -205,13 +205,13 @@ link_state          : up
 
 Se connecter à l'interface web de pfSense (identifiants par défaut : admin / pfsense).
 
-#### Interface WAN (Master)
+### Interface WAN (Master)
 
 - **Type** : Static IPv4
 - **Adresse** : 192.168.1.101/24
 - **Passerelle** : Votre gateway WAN
 
-#### Interface LAN (Master)
+### Interface LAN (Master)
 
 - **Type** : Static IPv4
 - **Adresse** : 172.16.0.1/24
@@ -222,7 +222,7 @@ Répéter sur le Backup avec les adresses correspondantes.
 
 ### 2. Configuration CARP
 
-#### Sur pfSense Master
+### Sur pfSense Master
 
 **IP Virtuelle LAN** :
 
@@ -294,7 +294,7 @@ Sur le pfSense Master :
 
 ### 5. Règles de pare-feu
 
-#### Règle HTTPS (synchronisation XMLRPC)
+### Règle HTTPS (synchronisation XMLRPC)
 
 1. Naviguer vers **Firewall** → **Rules** → **LAN** → **Add**
 2. Configuration :
@@ -306,7 +306,7 @@ Sur le pfSense Master :
 
 ![Règle HTTPS](https://github.com/user-attachments/assets/48fd975c-393c-4ff3-bc8e-998d3025a083)
 
-#### Règle pfsync
+### Règle pfsync
 
 3. Cliquer sur **Add**
 4. Configuration :
