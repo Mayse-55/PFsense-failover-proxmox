@@ -28,7 +28,6 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 ### Configuration Réseau
 - 2 adresses IP publiques pour les WAN
 - 1 sous-réseau pour le LAN
-- 1 sous-réseau pour la synchronisation CARP
 - Connexion réseau stable entre les nœuds
 
 > [!CAUTION]
