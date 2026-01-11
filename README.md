@@ -250,10 +250,8 @@ Répéter sur le Backup avec les adresses correspondantes.
 
 ![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
 
-#### Sur pfSense Backup
-
-Répéter la configuration en modifiant uniquement :
-- **Skew** : 100 (priorité secondaire)
+#### Sur pfSense (Backup)
+Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 > Le mot de passe CARP et le VHID doivent être identiques sur les deux nœuds.
 
