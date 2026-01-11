@@ -32,7 +32,7 @@
 - 1 sous-réseau dédié pour le LAN
 - Connexion réseau stable et redondante entre les nœuds
 
-> **Avertissement**
+> [!caution]
 > Ce guide a été testé et validé sur des serveurs Proxmox **9.1.4** et pfSense **2.8.1-RELEASE**.
 > La configuration utilise une carte réseau physique et une interface virtuelle OVS.
 > En cas de dysfonctionnement, vérifiez la conformité de votre configuration système et réseau.
