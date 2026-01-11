@@ -250,7 +250,7 @@ Répéter sur le Backup avec les adresses correspondantes.
 
 ![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
 
-### Sur pfSense Backup
+### Sur pfSense Backup 
 Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ### Vérification du statut CARP
