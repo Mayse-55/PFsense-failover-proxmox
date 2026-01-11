@@ -1,12 +1,7 @@
-Voici une version professionnelle, épurée et structurée de votre README, avec une mise en forme sobre et adaptée à un contexte technique :
-
----
-
 # Configuration d'un cluster pfSense en haute disponibilité sous Proxmox
 
 [![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)](https://www.proxmox.com/)
 [![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)](https://www.pfsense.org/)
-[![License](https://img.shields.io/badge/Documentation-CC--BY--4.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 
 **Guide technique pour la configuration d'un cluster pfSense en haute disponibilité avec synchronisation d'état sous Proxmox VE utilisant Open vSwitch.**
 
