@@ -166,9 +166,9 @@ ovs-vsctl get interface vxlan-lan statistics
 #### **Sur pfSense 1 (Master) :**
 
 1. **Configuration Virtual IPs**
-   ```bash
-   Firewall --> Virtual IPs --> add
-   ```
+```bash
+Firewall --> Virtual IPs --> add
+```
 2. **Configuration**
 - Type : CARP
 - Interface : LAN
