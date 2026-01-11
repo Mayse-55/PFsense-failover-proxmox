@@ -234,3 +234,161 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ![Règle HTTPS](https://github.com/user-attachments/assets/48fd975c-393c-4ff3-bc8e-998d3025a083)
 ![Règle PFSYNC](https://github.com/user-attachments/assets/1525e61e-816a-455a-a3c1-a3d6b788ed3c)
+
+---
+
+## 📋 Aide : Commandes de base Open vSwitch
+
+### Voir la configuration complète OVS
+```bash
+ovs-vsctl show
+```
+
+### Lister tous les bridges
+```bash
+ovs-vsctl list-br
+```
+
+### Lister les ports d'un bridge
+```bash
+ovs-vsctl list-ports vmbr1
+```
+
+### Voir les détails d'une interface
+```bash
+ovs-vsctl list interface vxlan-lan
+```
+
+### Créer un tunnel VXLAN
+#### Méthode 1 : Commande simple
+```bash
+# Créer un tunnel VXLAN sur vmbr1 vers un Proxmox distant
+ovs-vsctl add-port vmbr1 vxlan-lan \
+  -- set interface vxlan-lan type=vxlan \
+     options:remote_ip=192.168.25.103 \
+     options:key=2000
+```
+- **vmbr1** : Le bridge sur lequel attacher le tunnel
+- **vxlan-lan** : Nom du tunnel (modifiable)
+- **remote_ip** : IP du Proxmox distant
+- **key** : Identifiant VXLAN (doit être identique des deux côtés)
+
+#### Méthode 2 : Avec options avancées
+```bash
+# Tunnel VXLAN avec plus d'options
+ovs-vsctl add-port vmbr1 vxlan-lan \
+  -- set interface vxlan-lan type=vxlan \
+     options:remote_ip=192.168.25.103 \
+     options:key=2000 \
+     options:dst_port=4789 \
+     options:ttl=64
+```
+- **dst_port** : Port UDP VXLAN (défaut : 4789)
+- **ttl** : Time To Live des paquets
+
+### Exemples de tunnels multiples
+```bash
+# Tunnel LAN (vmbr1)
+ovs-vsctl add-port vmbr1 vxlan-lan \
+  -- set interface vxlan-lan type=vxlan \
+     options:remote_ip=192.168.25.103 \
+     options:key=2000
+
+# Tunnel SYNC (vmbr2)
+ovs-vsctl add-port vmbr2 vxlan-sync \
+  -- set interface vxlan-sync type=vxlan \
+     options:remote_ip=192.168.25.103 \
+     options:key=3000
+
+# Tunnel vers un 3ème Proxmox
+ovs-vsctl add-port vmbr1 vxlan-to-pxm4 \
+  -- set interface vxlan-to-pxm4 type=vxlan \
+     options:remote_ip=192.168.25.104 \
+     options:key=2000
+```
+
+### Supprimer un tunnel VXLAN
+```bash
+# Supprimer un tunnel spécifique
+ovs-vsctl del-port vmbr1 vxlan-lan
+
+# Supprimer TOUS les ports d'un bridge (ATTENTION)
+# Liste d'abord les ports
+ovs-vsctl list-ports vmbr1
+
+# Supprime tous les ports un par un
+ovs-vsctl del-port vmbr1 vxlan-lan
+ovs-vsctl del-port vmbr1 vxlan-sync
+
+# ⚠️ Supprimer un bridge complet (supprime le bridge ET tous ses tunnels)
+ovs-vsctl del-br vmbr1
+```
+
+### Vérifier si un tunnel fonctionne
+1. **Vérifier l'état de l'interface**
+   ```bash
+   ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
+   ```
+   - **Résultat attendu :**
+     ```
+     error               : []
+     link_state          : up
+     ```
+     ✅ `error : []` = Pas d'erreur
+     ✅ `link_state : up` = Interface active
+
+2. **Voir les statistiques du tunnel**
+   ```bash
+   ovs-vsctl list interface vxlan-lan | grep statistics
+   ```
+   - **Résultat :**
+     ```
+     statistics          : {collisions=0, rx_bytes=125840, rx_crc_err=0, rx_dropped=0, rx_errors=0, rx_frame_err=0, rx_over_err=0, rx_packets=1520, tx_bytes=98560, tx_dropped=0, tx_errors=0, tx_packets=1240}
+     ```
+     ✅ `rx_packets` et `tx_packets` > 0 = Le trafic passe
+     ❌ Si tous à 0 = Aucun trafic
+
+3. **Voir toutes les infos du tunnel**
+   ```bash
+   ovs-vsctl list interface vxlan-lan
+   ```
+   - **Infos importantes à vérifier :**
+     ```
+     admin_state         : up
+     error               : []
+     ifindex             : 12
+     link_state          : up
+     options             : {key="2000", remote_ip="192.168.25.103"}
+     status              : {tunnel_egress_iface="enp8s0", tunnel_egress_iface_carrier=up}
+     type                : vxlan
+     ```
+     ✅ `tunnel_egress_iface_carrier=up` = Interface physique active
+     ✅ `options` = Vérifiez que `remote_ip` et `key` sont corrects
+
+4. **Tester avec tcpdump**
+   ```bash
+   # Voir le trafic VXLAN (port UDP 4789)
+   tcpdump -i enp8s0 -n port 4789
+
+   # Capturer le trafic sur le bridge virtuel
+   tcpdump -i vmbr1 -n
+   ```
+   - **Test :** Effectuez un ping depuis un pfSense et observez le trafic dans tcpdump.
+
+---
+
+## ✅ Validation finale
+
+À ce stade, votre cluster pfSense en haute disponibilité sous Proxmox devrait être pleinement opérationnel :
+- Les deux nœuds pfSense sont synchronisés via CARP et PFSYNC.
+- Les tunnels VXLAN sont actifs et permettent la communication entre les nœuds Proxmox.
+- Les règles de pare-feu et de NAT sont répliquées automatiquement.
+- Le basculement (failover) est testé et fonctionnel.
+
+**Pour valider le bon fonctionnement :**
+1. Vérifiez le statut CARP sur les deux nœuds pfSense.
+2. Testez le basculement manuel en éteignant le nœud maître.
+3. Vérifiez la connectivité réseau depuis le LAN et le WAN.
+4. Consultez les logs système et les statistiques OVS pour détecter d’éventuelles anomalies.
+
+En cas de problème, reportez-vous à la section [Dépannage](#dépannage) ou consultez les [Ressources](#ressources) pour obtenir de l’aide supplémentaire.
