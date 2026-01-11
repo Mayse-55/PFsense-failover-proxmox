@@ -34,7 +34,7 @@ Guide complet pour configurer un cluster haute disponibilité pfSense avec synch
 > Cette configuration utilise une carte réseau physique et une interface virtuelle OVS.  
 > En cas de problème, vérifiez votre configuration système et réseau.
 
-```
+---
 
 ## Installation
 
@@ -60,10 +60,13 @@ Sur chaque serveur Proxmox :
 ### 2. Installation des paquets nécessaires
 
 #### 2.1 Installation d'Open vSwitch
+
 ```bash
 # Mise à jour du système
 apt update && apt dist-upgrade -y
+```
 
+```bash
 # Installation d'Open vSwitch
 apt install openvswitch-switch openvswitch-common -y
 ```
@@ -83,7 +86,7 @@ Pour chaque VM pfSense :
 1. Éteindre la VM
 2. **Hardware** → **Add** → **Network Device**
 3. Configuration :
-```
+```bash
 Model: VirtIO (paravirtualized)
 Bridge: vmbr1
 VLAN Tag: (selon votre configuration)
