@@ -75,7 +75,7 @@ ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
 ```
 
 **Résultat attendu :**
-```
+```bash
 error               : []
 link_state          : up
 ```
