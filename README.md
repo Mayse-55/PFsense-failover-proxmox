@@ -200,8 +200,9 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ![NAT Outbound](https://github.com/user-attachments/assets/f8d9fc5b-f0e5-4845-b257-857c1248a51c)
 
-> **Note**
-> Cette configuration n'est à effectuer que sur le pfSense primaire. La réplication automatique se chargera de dupliquer les règles sur le nœud secondaire.
+> **Note**  
+> Cette configuration n'est à effectuer que sur le pfSense primaire.  
+> La réplication automatique se chargera de dupliquer les règles sur le nœud secondaire.
 
 ---
 
