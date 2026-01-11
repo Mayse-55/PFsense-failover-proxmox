@@ -334,7 +334,7 @@ ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
 error               : []
 link_state          : up
 ```
-✅ `error : []` = Pas d'erreur
+✅ `error : []` = Pas d'erreur  
 ✅ `link_state : up` = Interface active
 
 2. **Voir les statistiques du tunnel**
@@ -345,7 +345,7 @@ ovs-vsctl list interface vxlan-lan | grep statistics
 ```
 statistics          : {collisions=0, rx_bytes=125840, rx_crc_err=0, rx_dropped=0, rx_errors=0, rx_frame_err=0, rx_over_err=0, rx_packets=1520, tx_bytes=98560, tx_dropped=0, tx_errors=0, tx_packets=1240}
 ```
-✅ `rx_packets` et `tx_packets` > 0 = Le trafic passe
+✅ `rx_packets` et `tx_packets` > 0 = Le trafic passe  
 ❌ Si tous à 0 = Aucun trafic
 
 4. **Voir toutes les infos du tunnel**
@@ -362,7 +362,7 @@ options             : {key="2000", remote_ip="192.168.25.103"}
 status              : {tunnel_egress_iface="enp8s0", tunnel_egress_iface_carrier=up}
 type                : vxlan
 ```
-✅ `tunnel_egress_iface_carrier=up` = Interface physique active
+✅ `tunnel_egress_iface_carrier=up` = Interface physique active  
 ✅ `options` = Vérifiez que `remote_ip` et `key` sont corrects
 
 5. **Tester avec tcpdump**
