@@ -73,39 +73,7 @@ Internet
 
 ---
 
-## Installation
-
-### 1. Création des machines virtuelles pfSense
-
-### Téléchargement de l'ISO
-
-[Télécharger pfSense](https://github.com/ipsec-dev/pfsense-iso/releases)
-
-### Paramètres des VMs
-
-Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
-
-| Paramètre | Valeur |
-|-----------|--------|
-| **OS Type** | Linux 6.x - 2.6 Kernel |
-| **RAM** | 4096 MB |
-| **CPU** | 2 cores (type: host) |
-| **Disque** | 32 GB (SCSI, cache: writeback) |
-| **Réseau** | VirtIO (bridge: vmbr0) |
-
-> Une VM doit être créée sur chaque nœud du cluster.
-
-#### Installation du système
-
-1. Démarrer la VM avec l'ISO pfSense
-2. Suivre l'assistant d'installation
-3. Sélectionner le partitionnement **Auto (UFS)**
-4. Configurer les interfaces réseau (WAN et LAN)
-5. Redémarrer la VM
-
----
-
-### 2. Installation d'Open vSwitch
+### 1. Installation d'Open vSwitch
 
 Sur chaque nœud Proxmox, exécuter :
 
@@ -120,9 +88,18 @@ apt install openvswitch-switch -y
 systemctl status openvswitch-switch
 ```
 
-### 3. Création du bridge OVS
+### 2. Création du bridge OVS
 
-### Via l'interface web Proxmox
+### Création de l'interface LAN
+
+1. Accéder à **System** → **Network**
+2. Cliquer sur **Create** → **OVS Bridge**
+3. Configurer :
+   - **Name** : `vmbr1`
+   - **Autostart** : Coché
+4. Appliquer la configuration
+
+### Création de l'interface SYNC
 
 1. Accéder à **System** → **Network**
 2. Cliquer sur **Create** → **OVS Bridge**
@@ -131,15 +108,19 @@ systemctl status openvswitch-switch
    - **Autostart** : Coché
 4. Appliquer la configuration
 
-### 4. Ajout d'une interface réseau aux VMs
+### 3. Ajout d'une interface réseau aux VMs
 
-Pour chaque VM pfSense :
+1. Pour chaque VM pfSense ajouter le LAN:
 
-1. Éteindre la VM
-2. Ajouter une interface réseau :
+Ajouter une interface réseau :
+   - **Bridge** : vmbr1
+   - **Model** : VirtIO
+
+2. Pour chaque VM pfSense ajouter le SYNC:
+
+Ajouter une interface réseau :
    - **Bridge** : vmbr2
    - **Model** : VirtIO
-3. Démarrer la VM
 
 ---
 
