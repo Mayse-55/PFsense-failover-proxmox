@@ -218,7 +218,7 @@ Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
 2. Suivre l'assistant d'installation
 3. Sélectionner le partitionnement **Auto (UFS)**
 4. Configurer les interfaces réseau (WAN, LAN et SYNC)
-5. Redémarrer la VM
+5. Démarrer la VM
 
 ---
 
@@ -231,13 +231,13 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 ### Interface WAN (Master)
 
 - **Type** : Static IPv4
-- **Adresse** : 192.168.1.101/24
-- **Passerelle** : Votre gateway WAN
+- **Adresse** : 192.168.25.10/24
+- **Passerelle** : 192.168.25.1
 
 ### Interface LAN (Master)
 
 - **Type** : Static IPv4
-- **Adresse** : 172.16.0.1/24
+- **Adresse** : 192.168.1.1/24
 
 ### Répéter sur le PFsense (Backup) avec les adresses correspondantes.
 
@@ -246,13 +246,13 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 ### Interface WAN (Backup)
 
 - **Type** : Static IPv4
-- **Adresse** : 192.168.1.102/24
-- **Passerelle** : Votre gateway WAN
+- **Adresse** : 192.168.25.20/24
+- **Passerelle** : 192.168.25.1
 
 ### Interface LAN (Backup)
 
 - **Type** : Static IPv4
-- **Adresse** : 172.16.0.2/24
+- **Adresse** : 192.168.1.1/24
 
 ---
 
