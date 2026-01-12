@@ -198,7 +198,7 @@ link_state          : up
 
 ---
 
-## Configuration pfSense
+## 1. Configuration pfSense
 
 ### 1.1 Configuration des interfaces
 
