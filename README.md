@@ -7,18 +7,6 @@ Guide technique pour la mise en place d'un cluster pfSense en haute disponibilit
 
 ---
 
-## Table des matières
-
-1. [Prérequis](#prérequis)
-2. [Architecture](#architecture)
-3. [Installation](#installation)
-4. [Configuration Open vSwitch](#configuration-open-vswitch)
-5. [Configuration pfSense](#configuration-pfsense)
-6. [Validation](#validation)
-7. [Référence des commandes](#référence-des-commandes)
-
----
-
 ## Prérequis
 
 ### Environnement
