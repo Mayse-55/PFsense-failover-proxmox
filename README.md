@@ -32,6 +32,7 @@ Guide technique pour la mise en place d'un cluster pfSense en haute disponibilit
 
 - Deux adresses IP pour les interfaces WAN
 - Un sous-réseau dédié pour le LAN
+- Une interfaces réseau sync entre les deux pfsenses
 - Connectivité réseau entre les nœuds Proxmox
 
 > [!caution]  
@@ -57,13 +58,17 @@ Le cluster repose sur plusieurs technologies :
 ```
 Internet
    │
-   └─── WAN ───┬─── pfSense Master (192.168.1.101)
-               ├─── pfSense Backup (192.168.1.102)
-               └─── IP Virtuelle (192.168.1.110) ← CARP
+   └─── WAN ───┬─── vmbr0 : pfSense Master (192.168.25.10)
+               ├─── vmbr0 : pfSense Backup (192.168.25.10)
+               └─── IP Virtuelle (192.168.25.100) ← CARP
    
-   └─── LAN ───┬─── pfSense Master (172.16.0.1)
-               ├─── pfSense Backup (172.16.0.2)
-               └─── IP Virtuelle (172.16.0.10) ← CARP
+   └─── LAN ───┬─── vmbr1 : pfSense Master (192.168.2.1)
+               └─── vmbr1 : pfSense Backup (192.168.2.1)
+
+   └─── SYNC ──┬─── vmbr2 : pfSense (Master) (10.10.10.1)
+               ├─── vmbr2 : pfSense (Backup) (10.10.10.1)
+               └─── IP Virtuelle (10.10.10.10) ← CARP
+
 ```
 
 ---
@@ -122,7 +127,7 @@ systemctl status openvswitch-switch
 1. Accéder à **System** → **Network**
 2. Cliquer sur **Create** → **OVS Bridge**
 3. Configurer :
-   - **Name** : `vmbr1`
+   - **Name** : `vmbr2`
    - **Autostart** : Coché
 4. Appliquer la configuration
 
@@ -132,7 +137,7 @@ Pour chaque VM pfSense :
 
 1. Éteindre la VM
 2. Ajouter une interface réseau :
-   - **Bridge** : vmbr1
+   - **Bridge** : vmbr2
    - **Model** : VirtIO
 3. Démarrer la VM
 
@@ -146,16 +151,22 @@ Définir un plan d'adressage cohérent :
 
 **Interface WAN** :
 ```
-pfSense Master  : 192.168.1.101
-pfSense Backup  : 192.168.1.102
-IP Virtuelle    : 192.168.1.110 (CARP)
+pfSense Master  : 192.168.25.10/24
+pfSense Backup  : 192.168.25.20/24
+IP Virtuelle    : 192.168.25.100/24
 ```
 
 **Interface LAN** :
 ```
-pfSense Master  : 172.16.0.1
-pfSense Backup  : 172.16.0.2
-IP Virtuelle    : 172.16.0.10 (CARP)
+pfSense Master  : 192.168.1.1/24
+pfSense Backup  : 192.168.1.1/24
+```
+
+**Interface SYNC** :
+```
+pfSense Master  : 10.10.10.1/24
+pfSense Backup  : 10.10.10.2/24
+IP Virtuelle    : 10.10.10.10/24 (CARP)
 ```
 
 > Les adresses IP sont à adapter selon votre configuration.
