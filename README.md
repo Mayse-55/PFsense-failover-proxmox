@@ -198,9 +198,9 @@ link_state          : up
 
 ---
 
-## 1. Configuration pfSense
+## Configuration pfSense
 
-### 1.1 Configuration des interfaces
+### Configuration des interfaces sur le PFsense (Master)
 
 Se connecter à l'interface web de pfSense (identifiants par défaut : admin / pfsense).
 
@@ -215,7 +215,7 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 - **Type** : Static IPv4
 - **Adresse** : 172.16.0.1/24
 
-### 1.2 Répéter sur le PFsense (Backup) avec les adresses correspondantes.
+### Répéter sur le PFsense (Backup) avec les adresses correspondantes.
 
 Se connecter à l'interface web de pfSense (identifiants par défaut : admin / pfsense).
 
