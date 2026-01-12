@@ -209,13 +209,13 @@ Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
 
 ### Ajout des interfaces réseau aux VMs
 
-3.1 Pour chaque VM pfSense ajouter le LAN:
+1. Pour chaque VM pfSense ajouter le LAN:
 
 Ajouter une interface réseau :
    - **Bridge** : vmbr1
    - **Model** : VirtIO
 
-3.2 Pour chaque VM pfSense ajouter le SYNC:
+2. Pour chaque VM pfSense ajouter le SYNC:
 
 Ajouter une interface réseau :
    - **Bridge** : vmbr2
