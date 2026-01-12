@@ -122,6 +122,8 @@ Ajouter une interface réseau :
    - **Bridge** : vmbr2
    - **Model** : VirtIO
 
+<img width="1561" height="611" alt="image" src="https://github.com/user-attachments/assets/f88ced56-53c1-42d8-833a-08c593d5a11e" />
+
 ---
 
 ## Configuration Open vSwitch
@@ -217,8 +219,7 @@ Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
 1. Démarrer la VM avec l'ISO pfSense
 2. Suivre l'assistant d'installation
 3. Sélectionner le partitionnement **Auto (UFS)**
-4. Configurer les interfaces réseau (WAN, LAN et SYNC)
-5. Démarrer la VM
+4. Via la console configurer les interfaces réseau (WAN, LAN et SYNC)
 
 ---
 
@@ -265,13 +266,13 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 1. Naviguer vers **Firewall** → **Virtual IPs** → **Add**
 2. Configuration :
    - **Type** : CARP
-   - **Interface** : LAN
-   - **Address** : 172.16.0.10 / 24
+   - **Interface** : SYNC
+   - **Address** : 10.10.10.10 / 24
    - **Virtual IP Password** : Mot de passe sécurisé
    - **VHID Group** : 1
    - **Advertising Frequency** : Base 1, Skew 0
 
-![CARP LAN](https://github.com/user-attachments/assets/1660b640-fe6e-4742-9d03-43c09c30fa02)
+<img width="1164" height="701" alt="image" src="https://github.com/user-attachments/assets/1a441b0e-a124-40d9-a2b9-3114441a6b7d" />
 
 **IP Virtuelle WAN** :
 
@@ -279,12 +280,12 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 4. Configuration :
    - **Type** : CARP
    - **Interface** : WAN
-   - **Address** : 192.168.1.110 / 24
+   - **Address** : 192.168.25.100 / 24
    - **Virtual IP Password** : Même mot de passe
    - **VHID Group** : 2
    - **Advertising Frequency** : Base 1, Skew 0
 
-![CARP WAN](https://github.com/user-attachments/assets/a9773d18-76c9-4526-9662-ed5099845a79)
+<img width="1155" height="701" alt="image" src="https://github.com/user-attachments/assets/14852adc-067f-4a59-93da-d35604d213cd" />
 
 ### Sur pfSense Backup 
 Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
