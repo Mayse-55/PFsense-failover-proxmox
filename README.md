@@ -108,6 +108,8 @@ systemctl status openvswitch-switch
    - **Autostart** : Coché
 4. Appliquer la configuration
 
+<img width="1561" height="611" alt="image" src="https://github.com/user-attachments/assets/f88ced56-53c1-42d8-833a-08c593d5a11e" />
+
 ### 3. Ajout d'une interface réseau aux VMs
 
 3.1 Pour chaque VM pfSense ajouter le LAN:
@@ -122,7 +124,7 @@ Ajouter une interface réseau :
    - **Bridge** : vmbr2
    - **Model** : VirtIO
 
-<img width="1561" height="611" alt="image" src="https://github.com/user-attachments/assets/f88ced56-53c1-42d8-833a-08c593d5a11e" />
+<img width="1564" height="536" alt="image" src="https://github.com/user-attachments/assets/aa4a7b96-bcd9-4d29-8dea-83333404538d" />
 
 ---
 
