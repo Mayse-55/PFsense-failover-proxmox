@@ -15,8 +15,7 @@ Guide technique pour la mise en place d'un cluster pfSense en haute disponibilit
 4. [Configuration Open vSwitch](#configuration-open-vswitch)
 5. [Configuration pfSense](#configuration-pfsense)
 6. [Validation](#validation)
-7. [Dépannage](#dépannage)
-8. [Référence des commandes](#référence-des-commandes)
+7. [Référence des commandes](#référence-des-commandes)
 
 ---
 
