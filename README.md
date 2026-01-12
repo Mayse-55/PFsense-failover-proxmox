@@ -296,6 +296,8 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 - Naviguer vers **Status** → **CARP (failover)**
 - Les deux adresses doivent apparaître avec le statut "Master" sur pfSense 1.
 
+<img width="1171" height="647" alt="image" src="https://github.com/user-attachments/assets/74aa298c-9671-4fb9-910c-47c8f60e206b" />
+
 ---
 
 ### 3. Configuration NAT
@@ -306,7 +308,7 @@ Sur le pfSense Master uniquement :
 2. Sélectionner **Hybrid Outbound NAT rule generation**
 3. Sauvegarder
 
-![NAT Outbound](https://github.com/user-attachments/assets/f8d9fc5b-f0e5-4845-b257-857c1248a51c)
+<img width="1162" height="521" alt="image" src="https://github.com/user-attachments/assets/d667b24e-6598-4400-a608-4b705aa657bf" />
 
 > La configuration sera automatiquement répliquée vers le Backup.
 
@@ -319,9 +321,9 @@ Sur le pfSense Master :
 1. Naviguer vers **System** → **High Avail. Sync**
 2. Configuration :
    - **Synchronize States** : Activé
-   - **Synchronize Interface** : LAN
-   - **pfsync Synchronize Peer IP** : 172.16.0.2
-   - **Synchronize Config to IP** : 172.16.0.2
+   - **Synchronize Interface** : SYNC
+   - **pfsync Synchronize Peer IP** : 10.10.10.2
+   - **Synchronize Config to IP** : 10.10.10.2
    - **Remote System Username** : admin
    - **Remote System Password** : Mot de passe du Backup
 3. Cocher toutes les options de synchronisation
