@@ -59,14 +59,14 @@ Le cluster repose sur plusieurs technologies :
 Internet
    │
    └─── WAN ───┬─── vmbr0 : pfSense Master (192.168.25.10)
-               ├─── vmbr0 : pfSense Backup (192.168.25.10)
+               ├─── vmbr0 : pfSense Backup (192.168.25.20)
                └─── IP Virtuelle (192.168.25.100) ← CARP
    
    └─── LAN ───┬─── vmbr1 : pfSense Master (192.168.2.1)
                └─── vmbr1 : pfSense Backup (192.168.2.1)
 
    └─── SYNC ──┬─── vmbr2 : pfSense (Master) (10.10.10.1)
-               ├─── vmbr2 : pfSense (Backup) (10.10.10.1)
+               ├─── vmbr2 : pfSense (Backup) (10.10.10.2)
                └─── IP Virtuelle (10.10.10.10) ← CARP
 
 ```
@@ -110,13 +110,13 @@ systemctl status openvswitch-switch
 
 ### 3. Ajout d'une interface réseau aux VMs
 
-1. Pour chaque VM pfSense ajouter le LAN:
+3.1 Pour chaque VM pfSense ajouter le LAN:
 
 Ajouter une interface réseau :
    - **Bridge** : vmbr1
    - **Model** : VirtIO
 
-2. Pour chaque VM pfSense ajouter le SYNC:
+3.2 Pour chaque VM pfSense ajouter le SYNC:
 
 Ajouter une interface réseau :
    - **Bridge** : vmbr2
@@ -157,18 +157,18 @@ IP Virtuelle    : 10.10.10.10/24 (CARP)
 ### Sur Proxmox 1 (192.168.1.101)
 
 ```bash
-ovs-vsctl add-port vmbr1 vxlan-lan \
+ovs-vsctl add-port vmbr2 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.1.102 \
+     options:remote_ip=192.168.25.102 \
      options:key=2000
 ```
 
 ### Sur Proxmox 2 (192.168.1.102)
 
 ```bash
-ovs-vsctl add-port vmbr1 vxlan-lan \
+ovs-vsctl add-port vmbr2 vxlan-lan \
   -- set interface vxlan-lan type=vxlan \
-     options:remote_ip=192.168.1.101 \
+     options:remote_ip=192.168.25.101 \
      options:key=2000
 ```
 
@@ -187,6 +187,38 @@ ovs-vsctl list interface vxlan-lan | grep -E "link_state|error"
 error               : []
 link_state          : up
 ```
+
+---
+
+## Installation
+
+### 1. Création des machines virtuelles pfSense
+
+### Téléchargement de l'ISO
+
+[Télécharger pfSense](https://github.com/ipsec-dev/pfsense-iso/releases)
+
+### Paramètres des VMs
+
+Créer une VM sur chaque nœud Proxmox avec les caractéristiques suivantes :
+
+| Paramètre | Valeur |
+|-----------|--------|
+| **OS Type** | Linux 6.x - 2.6 Kernel |
+| **RAM** | 4096 MB |
+| **CPU** | 2 cores (type: host) |
+| **Disque** | 32 GB (SCSI, cache: writeback) |
+| **Réseau** | VirtIO (bridge: vmbr0) |
+
+> Une VM doit être créée sur chaque nœud du cluster.
+
+#### Installation du système
+
+1. Démarrer la VM avec l'ISO pfSense
+2. Suivre l'assistant d'installation
+3. Sélectionner le partitionnement **Auto (UFS)**
+4. Configurer les interfaces réseau (WAN, LAN et SYNC)
+5. Redémarrer la VM
 
 ---
 
