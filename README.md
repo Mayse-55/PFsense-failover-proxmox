@@ -217,6 +217,17 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 
 Répéter sur le PFsense (Backup) avec les adresses correspondantes.
 
+### Interface WAN (Backup)
+
+- **Type** : Static IPv4
+- **Adresse** : 192.168.1.101/24
+- **Passerelle** : Votre gateway WAN
+
+### Interface LAN (Backup)
+
+- **Type** : Static IPv4
+- **Adresse** : 172.16.0.1/24
+
 ---
 
 ### 2. Configuration CARP
