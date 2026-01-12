@@ -16,13 +16,6 @@ Guide technique pour la mise en place d'un cluster pfSense en haute disponibilit
 - **Accès** : Droits administrateur root
 - **Infrastructure** : Minimum 2 nœuds Proxmox
 
-### Réseau
-
-- Deux adresses IP pour les interfaces WAN
-- Un sous-réseau dédié pour le LAN
-- Une interfaces réseau sync entre les deux pfsenses
-- Connectivité réseau entre les nœuds Proxmox
-
 > [!caution]  
 > Ce guide a été testé avec **Proxmox VE 9.1.4** et **pfSense 2.8.1-RELEASE**.  
 > Adaptez les adresses IP selon votre environnement.  
