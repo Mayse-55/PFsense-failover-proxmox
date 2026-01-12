@@ -261,6 +261,13 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 
 ### 2. Configuration CARP
 
+### Vérification des interfaces
+
+Vérifier que les interfaces soit présentes et configurer : 
+
+<img width="553" height="133" alt="image" src="https://github.com/user-attachments/assets/db54f68d-459c-4086-97c8-8d640c58cb4d" />
+
+
 ### Sur pfSense Master
 
 **IP Virtuelle LAN** :
