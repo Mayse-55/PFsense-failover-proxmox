@@ -54,7 +54,7 @@ Internet
 
 ---
 
-## 1. Installation d'Open vSwitch
+## Installation d'Open vSwitch
 
 Sur chaque nœud Proxmox, exécuter :
 
@@ -69,9 +69,9 @@ apt install openvswitch-switch -y
 systemctl status openvswitch-switch
 ```
 
-## 2. Création du bridge OVS
+## Création du bridge OVS
 
-### 2.1 Création de l'interface LAN
+### 1. Création de l'interface LAN
 
 1. Accéder à **System** → **Network**
 2. Cliquer sur **Create** → **OVS Bridge**
@@ -80,7 +80,7 @@ systemctl status openvswitch-switch
    - **Autostart** : Coché
 4. Appliquer la configuration
 
-### 2.2 Création de l'interface SYNC
+### 2. Création de l'interface SYNC
 
 1. Accéder à **System** → **Network**
 2. Cliquer sur **Create** → **OVS Bridge**
