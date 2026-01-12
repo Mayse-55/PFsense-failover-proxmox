@@ -263,7 +263,7 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 
 ### Vérification des interfaces
 
-Vérifier que les interfaces soit présentes et configurer : 
+Vérifier que les interfaces soient présentes et configurées :
 
 <img width="553" height="133" alt="image" src="https://github.com/user-attachments/assets/db54f68d-459c-4086-97c8-8d640c58cb4d" />
 
