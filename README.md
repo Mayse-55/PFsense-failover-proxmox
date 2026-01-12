@@ -329,34 +329,22 @@ Sur le pfSense Master :
 3. Cocher toutes les options de synchronisation
 4. Sauvegarder
 
-![High Avail. Sync](https://github.com/user-attachments/assets/455ffb75-6078-4e61-b4c0-7dbea329be98)
+<img width="1152" height="1001" alt="image" src="https://github.com/user-attachments/assets/b6bf968b-3029-4a04-bfe1-2d8309db2511" />
 
 ---
 
 ### 5. Règles de pare-feu
 
-### Règle HTTPS (synchronisation XMLRPC)
+### Règle SYNC
 
 1. Naviguer vers **Firewall** → **Rules** → **LAN** → **Add**
 2. Configuration :
    - **Action** : Pass
-   - **Protocol** : TCP
-   - **Source** : 172.16.0.2
-   - **Destination** : This firewall (self)
-   - **Destination Port** : HTTPS (443)
+   - **Protocol** : any
+   - **Source** : any
+   - **Destination** : any
 
-![Règle HTTPS](https://github.com/user-attachments/assets/48fd975c-393c-4ff3-bc8e-998d3025a083)
-
-### Règle pfsync
-
-3. Cliquer sur **Add**
-4. Configuration :
-   - **Action** : Pass
-   - **Protocol** : pfsync
-   - **Source** : 172.16.0.2
-   - **Destination** : This firewall (self)
-
-![Règle PFSYNC](https://github.com/user-attachments/assets/1525e61e-816a-455a-a3c1-a3d6b788ed3c)
+<img width="1153" height="717" alt="image" src="https://github.com/user-attachments/assets/8df892ab-b990-42c2-bd0f-4b69ac4de739" />
 
 5. Sauvegarder et appliquer les changements
 
