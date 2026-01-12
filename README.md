@@ -336,6 +336,7 @@ Ajouter une régle (mappings) :
 
 <img width="1140" height="820" alt="image" src="https://github.com/user-attachments/assets/7bef968c-70c5-48cf-9db8-5fb33662e1d0" />
 
+
 > La configuration sera automatiquement répliquée vers le Backup.
 
 ---
