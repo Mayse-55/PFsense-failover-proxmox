@@ -274,7 +274,7 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
    - **VHID Group** : 1
    - **Advertising Frequency** : Base 1, Skew 0
 
-<img width="1164" height="701" alt="image" src="https://github.com/user-attachments/assets/1a441b0e-a124-40d9-a2b9-3114441a6b7d" />
+<img width="1150" height="695" alt="image" src="https://github.com/user-attachments/assets/a1b94dca-5267-4a58-81db-464e58c4e8b5" />
 
 **IP Virtuelle WAN** :
 
@@ -287,7 +287,7 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
    - **VHID Group** : 2
    - **Advertising Frequency** : Base 1, Skew 0
 
-<img width="1155" height="701" alt="image" src="https://github.com/user-attachments/assets/14852adc-067f-4a59-93da-d35604d213cd" />
+<img width="1152" height="696" alt="image" src="https://github.com/user-attachments/assets/ed3da4e2-c5b5-4926-b42f-dc6561a40b7c" />
 
 ### Sur pfSense Backup 
 Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
