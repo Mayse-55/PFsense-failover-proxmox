@@ -324,6 +324,18 @@ Sur le pfSense Master uniquement :
 
 <img width="1162" height="521" alt="image" src="https://github.com/user-attachments/assets/d667b24e-6598-4400-a608-4b705aa657bf" />
 
+Ajouter une régle (mappings) : 
+
+1. Naviguer vers **Firewall** → **NAT** → **Outbound** -> **Add**
+2. Interface : Wan
+3. Protocol : ANY
+4. Source : Network or Alias -> 192.168.25.0
+5. Destination : ANY
+6. Address : 192.168.25.100()
+7. Save
+
+<img width="1140" height="820" alt="image" src="https://github.com/user-attachments/assets/7bef968c-70c5-48cf-9db8-5fb33662e1d0" />
+
 > La configuration sera automatiquement répliquée vers le Backup.
 
 ---
