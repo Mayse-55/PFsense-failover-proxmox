@@ -1,4 +1,4 @@
-# Configuration d'un cluster pfSense en haute disponibilité sous Proxmox
+# Configuration d'un cluster pfSense en haute disponibilité
 
 [![Proxmox](https://img.shields.io/badge/Proxmox-9.1.4-orange)](https://www.proxmox.com/)
 [![pfSense](https://img.shields.io/badge/pfSense-2.8.1_Release-blue)](https://www.pfsense.org/)
