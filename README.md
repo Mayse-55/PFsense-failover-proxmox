@@ -215,7 +215,7 @@ Se connecter à l'interface web de pfSense (identifiants par défaut : admin / p
 - **Type** : Static IPv4
 - **Adresse** : 172.16.0.1/24
 
-Répéter sur le Backup avec les adresses correspondantes.
+Répéter sur le PFsense (Backup) avec les adresses correspondantes.
 
 ---
 
