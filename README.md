@@ -320,7 +320,9 @@ Sur le pfSense Master uniquement :
 
 1. Naviguer vers **Firewall** → **NAT** → **Outbound**
 2. Sélectionner **Hybrid Outbound NAT rule generation**
-3. Sauvegarder
+3. Sauvegarder  
+
+> La configuration sera automatiquement répliquée vers le Backup.
 
 <img width="1162" height="521" alt="image" src="https://github.com/user-attachments/assets/d667b24e-6598-4400-a608-4b705aa657bf" />
 
@@ -332,12 +334,14 @@ Ajouter une régle (mappings) :
 4. Source : Network or Alias -> 192.168.25.0
 5. Destination : ANY
 6. Address : 192.168.25.100()
-7. Save
+7. Save  
+
+> La configuration sera automatiquement répliquée vers le Backup.
 
 <img width="1140" height="820" alt="image" src="https://github.com/user-attachments/assets/7bef968c-70c5-48cf-9db8-5fb33662e1d0" />
 
 
-> La configuration sera automatiquement répliquée vers le Backup.
+
 
 ---
 
@@ -370,10 +374,9 @@ Sur le pfSense Master :
    - **Protocol** : any
    - **Source** : any
    - **Destination** : any
+3. Sauvegarder et appliquer les changements
 
 <img width="1153" height="717" alt="image" src="https://github.com/user-attachments/assets/8df892ab-b990-42c2-bd0f-4b69ac4de739" />
-
-5. Sauvegarder et appliquer les changements
 
 ---
 
