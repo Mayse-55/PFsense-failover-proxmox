@@ -231,7 +231,7 @@ Ajouter une interface réseau :
 
 Vous pouvez installer une VM windows sur le **proxmox 1** connecter à l'interface **vmbr2** pour administrer PFsense
 
-IP : 10.10.10.100/24
+IP : 10.10.10.100/24  
 Gateway : 10.10.10.1
 
 ### Configuration des interfaces sur le PFsense (Master)
