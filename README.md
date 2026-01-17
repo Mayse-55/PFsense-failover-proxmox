@@ -289,7 +289,7 @@ Répéter les étapes ci-dessus en modifiant **Skew** à **1**.
 
 ### Vérification du statut CARP
 - Naviguer vers **Status** → **CARP (failover)**
-- Les deux adresses doivent apparaître avec le statut "Master" sur pfSense 1.
+- Les deux adresses doivent apparaître avec le statut "Master" sur pfSense Master.
 
 <img width="1171" height="647" alt="image" src="https://github.com/user-attachments/assets/74aa298c-9671-4fb9-910c-47c8f60e206b" />
 
