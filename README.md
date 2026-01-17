@@ -123,7 +123,7 @@ IP Virtuelle    : 10.10.10.10/24 (CARP)
 
 ### Création du tunnel VXLAN
 
-### Sur Proxmox 1 (192.168.1.101)
+### Sur Proxmox 1 (192.168.25.101)
 
 ```bash
 ovs-vsctl add-port vmbr2 vxlan-lan \
@@ -132,7 +132,7 @@ ovs-vsctl add-port vmbr2 vxlan-lan \
      options:key=2000
 ```
 
-### Sur Proxmox 2 (192.168.1.102)
+### Sur Proxmox 2 (192.168.25.102)
 
 ```bash
 ovs-vsctl add-port vmbr2 vxlan-lan \
