@@ -141,7 +141,7 @@ ovs-vsctl add-port vmbr2 vxlan-lan \
      options:key=2000
 ```
 
-### Rendre la configuration VXLAN persistante
+### Rendre la configuration VXLAN Perstitant
 
 #### Sur Proxmox 1 (192.168.25.101)
 
