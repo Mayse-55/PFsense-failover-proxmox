@@ -157,7 +157,7 @@ auto vmbr2
 iface vmbr2 inet manual
         ovs_type OVSBridge
         ovs_ports vxlan-lan
-        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.102 options:key=2000 options:dst_port=4789
+        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.102 options:key=2000
         post-up sleep 2
 #LAN pfSense
 ```
@@ -185,7 +185,7 @@ auto vmbr2
 iface vmbr2 inet manual
         ovs_type OVSBridge
         ovs_ports vxlan-lan
-        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.101 options:key=2000 options:dst_port=4789
+        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.101 options:key=2000
         post-up sleep 2
 #LAN pfSense
 ```
