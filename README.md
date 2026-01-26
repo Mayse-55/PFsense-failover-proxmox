@@ -530,6 +530,6 @@ Votre cluster pfSense en haute disponibilité est opérationnel lorsque :
 
 ---
 
-**Version** : 1.0  
-**Dernière mise à jour** : Janvier 2026
+**Version** : 1.0   
+**Dernière mise à jour** : Janvier 2026  
 **Documentation réalisée par Nathaël Polnecq**
