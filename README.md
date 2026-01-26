@@ -172,11 +172,6 @@ iface vmbr2 inet manual
 ifreload -a
 ```
 
-5. **Redémarrer le serveur :**
-```bash
-reboot
-```
-
 #### Sur Proxmox 2 (192.168.25.102)
 
 1. **Éditer la configuration réseau :**
@@ -206,7 +201,7 @@ iface vmbr2 inet manual
 ifreload -a
 ```
 
-5. **Redémarrer le serveur :**
+5. **Redémarrer les deux serveur qui héberge PFsense :**
 ```bash
 reboot
 ```
