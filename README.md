@@ -166,7 +166,13 @@ iface vmbr2 inet manual
    - Appuyez sur `Ctrl+O` puis `Entrée` pour sauvegarder
    - Appuyez sur `Ctrl+X` pour quitter
 
-4. **Redémarrer le serveur :**
+4. **Redémarrer la configuration réseau**
+```bash
+# Relancer manuellement la configuration réseau
+ifreload -a
+```
+
+5. **Redémarrer le serveur :**
 ```bash
 reboot
 ```
@@ -190,10 +196,18 @@ iface vmbr2 inet manual
 #LAN pfSense
 ```
 
-3. **Sauvegarder et redémarrer :**
+3. **Sauvegarder et quitter :**
+   - Appuyez sur `Ctrl+O` puis `Entrée` pour sauvegarder
+   - Appuyez sur `Ctrl+X` pour quitter
+     
+4. **Redémarrer la configuration réseau**
 ```bash
-# Sauvegarder : Ctrl+O puis Entrée
-# Quitter : Ctrl+X
+# Relancer manuellement la configuration réseau
+ifreload -a
+```
+
+5. **Redémarrer le serveur :**
+```bash
 reboot
 ```
 
