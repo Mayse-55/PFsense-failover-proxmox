@@ -141,6 +141,62 @@ ovs-vsctl add-port vmbr2 vxlan-lan \
      options:key=2000
 ```
 
+### Rendre la configuration VXLAN persistante
+
+#### Sur Proxmox 1 (192.168.25.101)
+
+1. **Éditer la configuration réseau :**
+```bash
+nano /etc/network/interfaces
+```
+
+2. **Trouver la section `vmbr2` et la remplacer par :**
+```bash
+# Interface OVS pour le LAN avec tunnel VXLAN
+auto vmbr2
+iface vmbr2 inet manual
+        ovs_type OVSBridge
+        ovs_ports vxlan-lan
+        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.102 options:key=2000 options:dst_port=4789
+        post-up sleep 2
+#LAN pfSense
+```
+
+3. **Sauvegarder et quitter :**
+   - Appuyez sur `Ctrl+O` puis `Entrée` pour sauvegarder
+   - Appuyez sur `Ctrl+X` pour quitter
+
+4. **Redémarrer le serveur :**
+```bash
+reboot
+```
+
+#### Sur Proxmox 2 (192.168.25.102)
+
+1. **Éditer la configuration réseau :**
+```bash
+nano /etc/network/interfaces
+```
+
+2. **Trouver la section `vmbr2` et la remplacer par :**
+```bash
+# Interface OVS pour le LAN avec tunnel VXLAN
+auto vmbr2
+iface vmbr2 inet manual
+        ovs_type OVSBridge
+        ovs_ports vxlan-lan
+        post-up ovs-vsctl --may-exist add-port vmbr2 vxlan-lan -- set interface vxlan-lan type=vxlan options:remote_ip=192.168.25.101 options:key=2000 options:dst_port=4789
+        post-up sleep 2
+#LAN pfSense
+```
+
+3. **Sauvegarder et redémarrer :**
+```bash
+# Sauvegarder : Ctrl+O puis Entrée
+# Quitter : Ctrl+X
+reboot
+```
+
 ### Vérification du tunnel
 
 ```bash
